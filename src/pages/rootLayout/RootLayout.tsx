@@ -1,7 +1,9 @@
+import React from "react";
+
 function RootLayout() {
   return (
     <div className='w-screen h-screen flex flex-col justify-between items-center bg-[#2D2C2C]'>
-      <section className='bg-black text-white'> 
+      <section className=' text-white'> 
  
  <nav className="w-full bg-[#222222] ">
       <div className="flex justify-between items-center mx-auto">
@@ -38,9 +40,11 @@ function RootLayout() {
         </div>
       </div>
     </nav>
+<div className="border-1 border-white"></div>
+<h1 className=" flex justify-center text-5xl m-7 font-bold ">Discover  cinemas/movies...</h1>
 
 </section>
-      <section></section>
+
     </div>
   );
 }

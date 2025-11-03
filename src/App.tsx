@@ -4,6 +4,9 @@ import AuthLayout from './pages/auth/AuthLayout';
 import Login from './pages/auth/Login';
 import SignUp from './pages/auth/SignUp';
 import RootLayout from './pages/rootLayout/RootLayout';
+import carousel from './components/carousel/Carousel';
+
+
 
 function App() {
   return (
@@ -16,7 +19,9 @@ function App() {
         <Route path='/' element={<RootLayout />}>
           <Route path='home' />
         </Route>
+        <Route path='/carousel' element={<carousel />} />
       </Routes>
+      
     </>
   );
 }
