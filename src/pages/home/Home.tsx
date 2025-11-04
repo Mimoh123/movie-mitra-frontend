@@ -7,8 +7,6 @@ import {
   scifiMovies,
 } from '@/data/movieData';
 
-import Autoplay from 'embla-carousel-autoplay';
-import { useRef } from 'react';
 import { FeaturedHero } from './Hero';
 
 function Home() {

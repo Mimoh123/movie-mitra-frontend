@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
 import { Film, Home, Heart, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import logo from './../../../public/logo.png';
 
 function RootLayout() {
   const location = useLocation();
@@ -26,8 +27,8 @@ function RootLayout() {
           <div className='container mx-auto px-4'>
             <div className='flex items-center justify-between py-4'>
               <Link to='/' className='flex items-center gap-3'>
-                <Film className='h-7 w-7 text-white' />
-                <h1 className='text-white'>CineMatch</h1>
+                <img src={logo} alt='logo' className='h-10 w-10' />
+                <h1 className='text-2xl font-bold'>MovieMitra</h1>
               </Link>
 
               <div className='flex items-center gap-1'>
@@ -57,9 +58,6 @@ function RootLayout() {
           </div>
         </nav>
 
-        {/* <h1 className=' flex justify-center text-5xl m-7 font-bold '>
-          Discover cinemas/movies...
-        </h1> */}
         <div className='flex items-center justify-center'>
           <Outlet />
         </div>
