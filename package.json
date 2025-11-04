@@ -10,10 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mantine/carousel": "^8.3.6",
+    "@mantine/core": "^8.3.6",
+    "@mantine/hooks": "^8.3.6",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "embla-carousel": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "lucide-react": "^0.536.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -23,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
+    "@iconify/react": "^6.0.2",
     "@tailwindcss/vite": "^4.1.11",
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.8",
@@ -32,6 +38,9 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
+    "postcss": "^8.5.6",
+    "postcss-preset-mantine": "^1.18.0",
+    "postcss-simple-vars": "^7.0.1",
     "tailwindcss": "^4.1.11",
     "tw-animate-css": "^1.3.6",
     "typescript": "~5.8.3",
