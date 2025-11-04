@@ -15,24 +15,26 @@ export function FeaturedHero() {
       <div className='absolute bottom-0 left-0 right-0 p-8 md:p-16'>
         <div className='container mx-auto max-w-7xl'>
           <div className='flex flex-wrap gap-2 mb-6'>
-            <Badge className='bg-red-600 text-white border-0'>
+            <Badge className='bg-red-600 text-lg text-center px-5 text-white border-0'>
               Trending Now
             </Badge>
             <Badge
               variant='outline'
-              className='border-neutral-600 text-neutral-300'
+              className='border-neutral-600 text-lg text-center px-5 text-neutral-300'
             >
               Action
             </Badge>
             <Badge
               variant='outline'
-              className='border-neutral-600 text-neutral-300'
+              className='border-neutral-600 text-lg px-5 text-neutral-300'
             >
               Thriller
             </Badge>
           </div>
 
-          <h1 className='text-white mb-4 max-w-2xl'>Featured Movie Title</h1>
+          <h1 className='text-white mb-4 max-w-2xl text-4xl font-bold'>
+            Featured Movie Title
+          </h1>
 
           <p className='text-neutral-300 mb-8 max-w-xl'>
             An epic tale of action and adventure that takes you on a journey

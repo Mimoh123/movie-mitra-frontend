@@ -12,7 +12,7 @@ import '@mantine/carousel/styles.css';
 
 function App() {
   return (
-    <>
+    <div className='h-screen overflow-y-auto hide-scrollbar'>
       <MantineProvider>
         <Routes>
           <Route path='/auth' element={<AuthLayout />}>
@@ -27,7 +27,7 @@ function App() {
           </Route>
         </Routes>
       </MantineProvider>
-    </>
+    </div>
   );
 }
 

@@ -124,3 +124,11 @@
   margin-left: -3rem !important;
   margin-right: -3rem !important;
 }
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

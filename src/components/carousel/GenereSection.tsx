@@ -24,7 +24,7 @@ interface GenreSectionProps {
 export function GenreSection({ title, movies }: GenreSectionProps) {
   return (
     <div className='mb-16'>
-      <h2 className='text-white mb-6 px-4'>{title}</h2>
+      <h2 className='text-white mb-6 text-2xl font-bold px-16'>{title}</h2>
       <div className='px-16'>
         <Carousel
           opts={{
