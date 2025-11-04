@@ -4,7 +4,7 @@ import AuthLayout from './pages/auth/AuthLayout';
 import Login from './pages/auth/Login';
 import SignUp from './pages/auth/SignUp';
 import RootLayout from './pages/rootLayout/RootLayout';
-import Card from './components/carousel/Card';
+
 import Home from './pages/home/Home';
 import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';

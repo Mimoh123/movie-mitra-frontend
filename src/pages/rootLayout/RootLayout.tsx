@@ -1,77 +1,62 @@
-import { Link, Outlet } from 'react-router';
+import { useState } from 'react';
+import { Link, Outlet, useLocation } from 'react-router';
+import { Film, Home, Heart, UserCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 function RootLayout() {
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(location.pathname);
+
+  const navItems = [
+    { id: 'home', label: 'Home', icon: Home, path: '/' },
+    {
+      id: 'recommendator',
+      label: 'Recommendator',
+      icon: Heart,
+      path: '/recommendator',
+    },
+    { id: 'watchlist', label: 'Watchlist', icon: Heart, path: '/watchlist' },
+    { id: 'about', label: 'About', icon: UserCircle, path: '/about' },
+  ];
+
   return (
     <div className='w-full min-h-screen flex flex-col justify-between items-center bg-[#2D2C2C] '>
       <section className=' text-white w-full '>
-        <nav className='w-full bg-[#222222] flex items-center justify-center '>
-          <div className='w-6xl '>
-            <div className='flex w-full justify-between items-center  '>
-              {/* Logo Section */}
-              <div className='flex items-center justify-start '>
-                <img
-                  src='./logo.png'
-                  alt='logo'
-                  className='h-16  object-contain '
-                />
+        <nav className='border-b border-neutral-800 bg-black'>
+          <div className='container mx-auto px-4'>
+            <div className='flex items-center justify-between py-4'>
+              <Link to='/' className='flex items-center gap-3'>
+                <Film className='h-7 w-7 text-white' />
+                <h1 className='text-white'>CineMatch</h1>
+              </Link>
 
-                <div className='text-white text-2xl font-semibold '>
-                  MovieMitra
-                </div>
+              <div className='flex items-center gap-1'>
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeTab === item.path;
+
+                  return (
+                    <Link key={item.id} to={item.path}>
+                      <Button
+                        variant={isActive ? 'secondary' : 'ghost'}
+                        onClick={() => setActiveTab(item.path)}
+                        className={`flex items-center gap-2 ${
+                          isActive
+                            ? 'bg-neutral-800 text-white'
+                            : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
+                        }`}
+                      >
+                        <Icon className='h-4 w-4' />
+                        <span className='hidden sm:inline'>{item.label}</span>
+                      </Button>
+                    </Link>
+                  );
+                })}
               </div>
-
-              {/* Navigation Links */}
-              <section className='flex items-center space-x-8'>
-                <div className='flex items-center space-x-8'>
-                  <Link
-                    to='/'
-                    className='text-white hover:text-gray-400 transition-colors duration-200 font-medium '
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    to='/recommendator'
-                    className='text-white hover:text-gray-400 transition-colors duration-200 font-medium'
-                  >
-                    Recommendator
-                  </Link>
-                  <Link
-                    to='/watchlist'
-                    className='text-white hover:text-gray-400 transition-colors duration-200 font-medium'
-                  >
-                    Watchlist
-                  </Link>
-                  <Link
-                    to='/about'
-                    className='text-white hover:text-gray-400 transition-colors duration-200 font-medium'
-                  >
-                    About
-                  </Link>
-                </div>
-
-                {/* User Profile Icon */}
-                <div className='flex items-center ml-7 mr-3'>
-                  <button className='w-11 h-11 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors duration-200'>
-                    <svg
-                      className='w-6 h-6 text-white'
-                      fill='none'
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'
-                    >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </section>
             </div>
           </div>
         </nav>
-        <div className='border-1 border-white'></div>
+
         {/* <h1 className=' flex justify-center text-5xl m-7 font-bold '>
           Discover cinemas/movies...
         </h1> */}
