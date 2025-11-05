@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router';
 
 function Login() {
   const [formData, setFormData] = useState<{ email: string; password: string }>(
@@ -56,7 +57,9 @@ function Login() {
       <section className='border-t pt-2'>
         <h1>
           Don't have an account?
-          <span className='text-primary mx-1 font-medium'>Register</span>
+          <Link to='/auth/register' className='text-primary mx-1 font-medium'>
+            Register
+          </Link>
           instead
         </h1>
       </section>

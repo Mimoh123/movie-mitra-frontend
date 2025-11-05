@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
-import { Film, Home, Heart, UserCircle } from 'lucide-react';
+import {  Home, Heart, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logo from './../../../public/logo.png';
 
@@ -17,7 +17,7 @@ function RootLayout() {
       path: '/recommendator',
     },
     { id: 'watchlist', label: 'Watchlist', icon: Heart, path: '/watchlist' },
-    { id: 'about', label: 'About', icon: UserCircle, path: '/about' },
+  { id: 'login', label: 'Login', icon: UserCircle, path: '/auth/login' },
   ];
 
   return (
@@ -30,6 +30,7 @@ function RootLayout() {
                 <img src={logo} alt='logo' className='h-10 w-10' />
                 <h1 className='text-2xl font-bold'>MovieMitra</h1>
               </Link>
+             
 
               <div className='flex items-center gap-1'>
                 {navItems.map((item) => {

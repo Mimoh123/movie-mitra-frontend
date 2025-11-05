@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router';
 
 function SignUp() {
   const [formData, setFormData] = useState<{
@@ -65,6 +66,15 @@ function SignUp() {
           Register
         </Button>
       </section>
+          <section className='border-t pt-2'>
+            <h1>
+              Already have an account?
+              <Link to='/auth/login' className='text-primary mx-1 font-medium'>
+                Login
+              </Link>
+              instead
+            </h1>
+          </section>
     </div>
   );
 }
