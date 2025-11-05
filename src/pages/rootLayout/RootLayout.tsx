@@ -24,9 +24,9 @@ function RootLayout() {
     { id: 'home', label: 'Home', icon: Home, path: '/' },
     {
       id: 'recommendator',
-      label: 'Recommendator',
-      icon: Heart,
-      path: '/recommendator',
+      label: 'Recommendation',
+      // icon: Heart,
+      path: '/recommendation',
     },
     { id: 'watchlist', label: 'Watchlist', icon: Heart, path: '/watchlist' },
     { id: 'about', label: 'About', icon: UserCircle, path: '/about' },
@@ -45,7 +45,7 @@ function RootLayout() {
 
               <div className='flex items-center gap-1'>
                 {navItems.map((item) => {
-                  const Icon = item.icon;
+                  const Icon = item.icon as React.ElementType;
                   const isActive = activeTab === item.path;
 
                   return (
@@ -59,7 +59,7 @@ function RootLayout() {
                             : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
                         }`}
                       >
-                        <Icon className='h-4 w-4' />
+                        {item.icon && <Icon className='h-4 w-4' />}
                         <span className='hidden sm:inline'>{item.label}</span>
                       </Button>
                     </Link>

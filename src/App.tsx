@@ -22,7 +22,7 @@ function App() {
           </Route>
           <Route path='/' element={<RootLayout />}>
             <Route path='/' element={<Home />} />
-            <Route path='recommendator' />
+            <Route path='recommendation' />
             <Route path='watchlist' element={<Watchlist />} />
             <Route path='about' />
           </Route>
