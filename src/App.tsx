@@ -9,6 +9,7 @@ import Home from './pages/home/Home';
 import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
+import Watchlist from './pages/watchlist';
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
           <Route path='/' element={<RootLayout />}>
             <Route path='/' element={<Home />} />
             <Route path='recommendator' />
-            <Route path='watchlist' />
+            <Route path='watchlist' element={<Watchlist />} />
             <Route path='about' />
           </Route>
         </Routes>
