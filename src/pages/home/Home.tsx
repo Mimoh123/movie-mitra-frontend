@@ -1,24 +1,18 @@
 import { GenreSection } from '@/components/carousel/GenereSection';
-import {
-  comedyMovies,
-  dramaMovies,
-  actionMovies,
-  thrillerMovies,
-  scifiMovies,
-} from '@/data/movieData';
-
 import { FeaturedHero } from './Hero';
+import { useMovieStore } from '@/stores';
 
 function Home() {
+  const { movies } = useMovieStore();
   return (
     <div className=' flex flex-col space-y-10 '>
       <FeaturedHero />
-      <div className=''>
-        <GenreSection title='Action & Adventure' movies={actionMovies} />
-        <GenreSection title='Drama & Romance' movies={dramaMovies} />
-        <GenreSection title='Comedy & Fun' movies={comedyMovies} />
-        <GenreSection title='Thriller & Mystery' movies={thrillerMovies} />
-        <GenreSection title='Sci-Fi & Fantasy' movies={scifiMovies} />
+      <div className='w-full relative px-4 sm:px-8 md:px-16 lg:px-24 xl:px-[20%] 2xl:px-[30%]'>
+        <GenreSection title='Action & Adventure' movies={movies} />
+        <GenreSection title='Drama & Romance' movies={movies} />
+        <GenreSection title='Comedy & Fun' movies={movies} />
+        <GenreSection title='Thriller & Mystery' movies={movies} />
+        <GenreSection title='Sci-Fi & Fantasy' movies={movies} />
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import type { TMDBMovie } from '@/types';
 import { MovieCard } from './Card';
 import {
   Carousel,
@@ -7,25 +8,18 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 
-interface Movie {
-  id: string;
-  title: string;
-  year: string;
-  rating: number;
-  genre: string;
-  image: string;
-}
-
 interface GenreSectionProps {
   title: string;
-  movies: Movie[];
+  movies: TMDBMovie[];
 }
 
 export function GenreSection({ title, movies }: GenreSectionProps) {
   return (
-    <div className='mb-16'>
-      <h2 className='text-white mb-6 text-2xl font-bold px-16'>{title}</h2>
-      <div className='px-16'>
+    <div className='mb-8 sm:mb-12 md:mb-16 w-full'>
+      <h2 className='text-white mb-4 sm:mb-6 text-xl sm:text-2xl font-bold px-0'>
+        {title}
+      </h2>
+      <div className='px-0 w-full'>
         <Carousel
           opts={{
             align: 'start',
@@ -43,8 +37,8 @@ export function GenreSection({ title, movies }: GenreSectionProps) {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className='left-2 bg-black/70 hover:bg-black border-neutral-700 text-white' />
-          <CarouselNext className='right-2 bg-black/70 hover:bg-black border-neutral-700 text-white' />
+          <CarouselPrevious className='hidden sm:flex -left-4 sm:-left-8 md:-left-12 bg-black/70 hover:bg-black border-neutral-700 text-white' />
+          <CarouselNext className='hidden sm:flex -right-4 sm:-right-8 md:-right-12 bg-black/70 hover:bg-black border-neutral-700 text-white' />
         </Carousel>
       </div>
     </div>
