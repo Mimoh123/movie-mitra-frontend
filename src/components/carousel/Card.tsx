@@ -76,7 +76,7 @@ export function MovieCard({
                 : 'border-neutral-700 text-neutral-400 hover:border-neutral-600 hover:text-white hover:bg-neutral-800'
             }`}
           >
-            <Heart className={`h-3 w-3 ${isFavourite ? 'fill-current' : ''}`} />
+            Recommend
           </Button>
           <Button
             size='sm'
