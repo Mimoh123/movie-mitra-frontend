@@ -7,7 +7,7 @@ function Home() {
   return (
     <div className=' flex flex-col space-y-10 '>
       <FeaturedHero />
-      <div className='w-full relative px-4 sm:px-8 md:px-16 lg:px-24 xl:px-[20%] 2xl:px-[30%]'>
+      <div className='w-full relative px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-[31%] overflow-visible'>
         <GenreSection title='Action & Adventure' movies={movies} />
         <GenreSection title='Drama & Romance' movies={movies} />
         <GenreSection title='Comedy & Fun' movies={movies} />

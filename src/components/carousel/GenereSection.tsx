@@ -19,7 +19,7 @@ export function GenreSection({ title, movies }: GenreSectionProps) {
       <h2 className='text-white mb-4 sm:mb-6 text-xl sm:text-2xl font-bold px-0'>
         {title}
       </h2>
-      <div className='px-0 w-full'>
+      <div className='px-0 w-full relative'>
         <Carousel
           opts={{
             align: 'start',
@@ -37,8 +37,8 @@ export function GenreSection({ title, movies }: GenreSectionProps) {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className='hidden sm:flex -left-4 sm:-left-8 md:-left-12 bg-black/70 hover:bg-black border-neutral-700 text-white' />
-          <CarouselNext className='hidden sm:flex -right-4 sm:-right-8 md:-right-12 bg-black/70 hover:bg-black border-neutral-700 text-white' />
+          <CarouselPrevious className='flex -left-2 sm:-left-4 md:-left-6 lg:-left-8 xl:-left-10 bg-black/70 hover:bg-black border-neutral-700 text-white z-10' />
+          <CarouselNext className='flex -right-2 sm:-right-4 md:-right-6 lg:-right-8 xl:-right-10 bg-black/70 hover:bg-black border-neutral-700 text-white z-10' />
         </Carousel>
       </div>
     </div>

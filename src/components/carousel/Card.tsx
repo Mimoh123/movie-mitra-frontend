@@ -57,10 +57,10 @@ export function MovieCard({
           <span className='text-neutral-400 text-xs sm:text-sm'>
             {release_date}
           </span>
-          <span className='text-neutral-600 hidden sm:inline'>•</span>
+          {/* <span className='text-neutral-600 hidden sm:inline'>•</span>
           <span className='text-neutral-500 text-xs sm:text-sm max-w-[100px] truncate'>
             {genre_ids.join(', ')}
-          </span>
+          </span> */}
         </div>
         <div className='flex items-center gap-1 sm:gap-2'>
           <Button
