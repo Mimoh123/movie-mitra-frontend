@@ -1,9 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { registerApi } from '@/utils/API';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 function SignUp() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<{
     name: string;
     email: string;
@@ -13,8 +16,28 @@ function SignUp() {
     email: '',
     password: '',
   });
+  const handleSignUp = async () => {
+    try {
+      const response = await registerApi(
+        formData.name,
+        formData.email,
+        formData.password
+      );
+      if (response) {
+        navigate('/auth/login');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
-    <div className='border rounded-lg flex flex-col items-center justify-center p-10 space-y-6 w-96'>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSignUp();
+      }}
+      className='border rounded-lg flex flex-col items-center justify-center p-10 space-y-6 w-96'
+    >
       <section className=''>
         <h1 className='font-medium text-2xl'>Register</h1>
       </section>
@@ -54,9 +77,9 @@ function SignUp() {
         <Input
           type='password'
           placeholder='Password'
-          defaultValue={formData.email}
+          defaultValue={formData.password}
           onBlur={(e) => {
-            setFormData({ ...formData, email: e.target.value });
+            setFormData({ ...formData, password: e.target.value });
           }}
         />
       </section>
@@ -65,7 +88,7 @@ function SignUp() {
           Register
         </Button>
       </section>
-    </div>
+    </form>
   );
 }
 
