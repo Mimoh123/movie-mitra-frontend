@@ -17,14 +17,24 @@ export function MovieCard({
 
   return (
     <Card className='bg-neutral-900 border-neutral-800 overflow-hidden group cursor-pointer transition-all hover:scale-105 hover:border-neutral-600 w-full'>
-      <div className='relative aspect-[3/4] overflow-hidden'>
+      <div className='relative aspect-[3/4] overflow-hidden bg-neutral-800'>
         <img
           src={
-            `https://image.tmdb.org/t/p/w500/${poster_path}` ||
-            'https://via.placeholder.com/500x750?text=No+Image'
+            poster_path
+              ? `https://image.tmdb.org/t/p/w500/${poster_path}`
+              : 'https://via.placeholder.com/500x750?text=No+Image'
           }
           alt={title}
-          className=' object-cover'
+          className='w-full h-full object-cover object-center'
+          loading='lazy'
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            if (poster_path) {
+              target.src = `https://image.tmdb.org/t/p/original/${poster_path}`;
+            } else {
+              target.src = 'https://via.placeholder.com/500x750?text=No+Image';
+            }
+          }}
         />
         <div className='absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2'>
           <Button

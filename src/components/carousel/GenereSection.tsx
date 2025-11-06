@@ -14,6 +14,8 @@ interface GenreSectionProps {
 }
 
 export function GenreSection({ title, movies }: GenreSectionProps) {
+  console.log('this is the title', title);
+  console.log('this is the movies', movies.length);
   return (
     <div className='mb-8 sm:mb-12 md:mb-16 w-full'>
       <h2 className='text-white mb-4 sm:mb-6 text-xl sm:text-2xl font-bold px-0'>

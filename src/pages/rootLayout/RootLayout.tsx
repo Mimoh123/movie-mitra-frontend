@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
 import { Film, Home, Heart, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import logo from './../../../public/logo.png';
+import logo from './././../../public/logo.png';
 import { getAllMovies } from '@/utils/API';
 import { useMovieStore } from '@/stores';
 import { SyncStatus } from '@/types';
@@ -18,8 +18,9 @@ function RootLayout() {
     }
   }, [status, fetchMovies]);
   useEffect(() => {
-    console.log('these are the movies', movies);
+    console.log('this is the movies', movies);
   }, [movies]);
+
   const navItems = [
     { id: 'home', label: 'Home', icon: Home, path: '/' },
     {

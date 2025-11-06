@@ -1,45 +1,68 @@
+import { useState, useEffect } from 'react';
 import { Play, Plus, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import type { TMDBMovie } from '@/types';
+import { getGenreName } from '@/data/genreId';
 
-export function FeaturedHero() {
+export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
+  const [isVisible, setIsVisible] = useState(true);
+  const [displayedMovie, setDisplayedMovie] = useState<TMDBMovie>(movie);
+
+  useEffect(() => {
+    if (movie.id !== displayedMovie.id) {
+      setIsVisible(false);
+      const timer1 = setTimeout(() => {
+        setDisplayedMovie(movie);
+        setTimeout(() => setIsVisible(true), 50);
+      }, 500);
+      return () => clearTimeout(timer1);
+    }
+  }, [movie, displayedMovie.id]);
+
   return (
-    <div className='relative h-[70vh] w-full overflow-hidden'>
+    <div className='relative h-[73vh] w-full overflow-hidden'>
       <img
-        src='https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaW5lbWElMjBmaWxtfGVufDF8fHx8MTc2MjIzMDc5OXww&ixlib=rb-4.1.0&q=80&w=1080'
-        alt='Featured Movie'
-        className='w-full h-full object-cover'
+        src={`https://image.tmdb.org/t/p/w1280/${displayedMovie.poster_path}`}
+        alt={displayedMovie.title}
+        className={`w-full h-full object-cover object-center transition-opacity duration-1000 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+        loading='eager'
+        onError={(e) => {
+          const target = e.target as HTMLImageElement;
+          target.src = `https://image.tmdb.org/t/p/original/${displayedMovie.poster_path}`;
+        }}
       />
       <div className='absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent' />
 
-      <div className='absolute bottom-0 left-0 right-0 p-8 md:p-16'>
+      <div
+        className={`absolute bottom-0 left-0 right-0 p-8 md:p-16 transition-opacity duration-1000 ${
+          isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
         <div className='container mx-auto max-w-7xl'>
           <div className='flex flex-wrap gap-2 mb-6'>
             <Badge className='bg-red-600 text-lg text-center px-5 text-white border-0'>
               Trending Now
             </Badge>
-            <Badge
-              variant='outline'
-              className='border-neutral-600 text-lg text-center px-5 text-neutral-300'
-            >
-              Action
-            </Badge>
-            <Badge
-              variant='outline'
-              className='border-neutral-600 text-lg px-5 text-neutral-300'
-            >
-              Thriller
-            </Badge>
+            {displayedMovie.genre_ids.map((genreId) => (
+              <Badge
+                key={genreId}
+                variant='outline'
+                className='border-neutral-600 text-lg text-center px-5 text-neutral-300'
+              >
+                {getGenreName(genreId)}
+              </Badge>
+            ))}
           </div>
 
           <h1 className='text-white mb-4 max-w-2xl text-4xl font-bold'>
-            Featured Movie Title
+            {displayedMovie.title}
           </h1>
 
-          <p className='text-neutral-300 mb-8 max-w-xl'>
-            An epic tale of action and adventure that takes you on a journey
-            through time and space. Don't miss this critically acclaimed
-            masterpiece.
+          <p className='text-neutral-300 mb-8 max-w-xl h-20 overflow-hidden whitespace-normal truncate'>
+            {displayedMovie.overview}
           </p>
 
           <div className='flex flex-wrap gap-3'>

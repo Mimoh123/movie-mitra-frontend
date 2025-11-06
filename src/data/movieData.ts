@@ -1,6 +1,12 @@
 import type { MovieCard } from "@/types";
 
-// Dummy movie card data
+
+
+
+
+
+
+
 export const movieData: MovieCard[] = [
  {
   title: "The Shawshank Redemption",
