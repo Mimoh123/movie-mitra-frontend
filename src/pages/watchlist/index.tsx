@@ -6,7 +6,7 @@ function Watchlist() {
   return (
     <div className=' flex flex-col space-y-10 py-10'>
       <section className=''>
-        <GenreSection title='Watch List' movies={actionMovies} />
+        {/* <GenreSection title='Watch List' movies={actionMovies} /> */}
       </section>
     </div>
   );
