@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { GenreSection } from '@/components/carousel/GenereSection';
 import { FeaturedHero } from './Hero';
-import { useMovieStore } from '@/stores';
+import { useMovieStore, useUserStore, useWatchListStore } from '@/stores';
 import {
   ActionAdventure,
   ComedyFun,
@@ -12,6 +12,9 @@ import {
 
 function Home() {
   const { movies } = useMovieStore();
+  const { watchLists, fetchWatchLists, status } = useWatchListStore();
+  const { userData, userStatus } = useUserStore();
+
   const [currentMovieIndex, setCurrentMovieIndex] = useState(0);
 
   useEffect(() => {
@@ -23,6 +26,11 @@ function Home() {
 
     return () => clearInterval(interval);
   }, [movies.length]);
+
+  useEffect(() => {
+    if (userData && watchLists) {
+    }
+  }, [userData, watchLists]);
 
   const checkGenre = (movieGenre_id: number[], checkForGenre: number[]) => {
     for (const movieGenre of movieGenre_id) {

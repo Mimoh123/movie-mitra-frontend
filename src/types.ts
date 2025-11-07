@@ -25,6 +25,7 @@ export type TMDBMovie = {
  video: boolean;
  vote_average: number;
  vote_count: number;
+ isFavourite?: boolean;
 };
 
 

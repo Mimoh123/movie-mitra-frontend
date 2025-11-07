@@ -11,14 +11,13 @@ const defaultNavItems = [
   {
     id: 'recommendator',
     label: 'Recommendation',
-    // icon: Heart,
     path: '/recommendation',
   },
   { id: 'watchlist', label: 'Watchlist', icon: Heart, path: '/watchlist' },
-  // { id: 'sign up', label: 'Sign Up', path: '/auth/register' },
   { id: 'login', label: 'Login', path: '/auth/login' },
 ];
 function RootLayout() {
+  const token = localStorage.getItem('token');
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.pathname);
   const [navItems, setNavItems] =
@@ -37,25 +36,25 @@ function RootLayout() {
     console.log('this is the movies', movies);
   }, [movies]);
   useEffect(() => {
-    if (userStatus === SyncStatus.LOCAL && localStorage.getItem('token')) {
+    if (userStatus === SyncStatus.LOCAL && token) {
       fetchUserData();
     }
   }, [userStatus, fetchUserData]);
   useEffect(() => {
-    if (
-      userStatus === SyncStatus.SYNCED &&
-      localStorage.getItem('token') &&
-      userData.name
-    ) {
+    console.log('this is the user data', userData);
+  }, [userData]);
+  useEffect(() => {
+    if (token && userData.name) {
+      console.log('i am inside');
       const newNavItems = defaultNavItems.filter(
-        (item) => item.id == 'sign up' || item.id == 'login'
+        (item) => item.id !== 'sign up' && item.id !== 'login'
       );
       setNavItems([
         ...newNavItems,
         { id: 'profile', label: 'Profile', icon: UserCircle, path: '/profile' },
       ]);
     }
-  }, [userStatus]);
+  }, [userStatus, userData, token]);
 
   return (
     <div className='w-full min-h-screen flex flex-col justify-between items-center bg-[#2D2C2C] '>

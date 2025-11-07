@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router';
 import AuthLayout from './pages/auth/AuthLayout';
 import Login from './pages/auth/Login';
@@ -10,8 +10,25 @@ import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
 import Watchlist from './pages/watchlist';
+import { useUserStore, useWatchListStore } from './stores';
+import { SyncStatus } from './types';
 
 function App() {
+  const token = localStorage.getItem('token');
+  const { userData, fetchUserData, userStatus } = useUserStore();
+  const { watchLists, fetchWatchLists, status } = useWatchListStore();
+  useEffect(() => {
+    if (token) {
+      if (userStatus === SyncStatus.LOCAL) {
+        fetchUserData();
+      }
+      if (status === SyncStatus.LOCAL) {
+        fetchWatchLists();
+        console.log('this is the watchlists', watchLists);
+      }
+    }
+  }, [token, userStatus, status, watchLists, fetchUserData, fetchWatchLists]);
+
   return (
     <div className='h-screen overflow-y-auto hide-scrollbar'>
       <MantineProvider>

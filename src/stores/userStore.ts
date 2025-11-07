@@ -28,7 +28,7 @@ export const useUserStore = create<UserState>((set) => ({
   set({ userStatus: SyncStatus.LOADING });
   try {
    const response = await getUserData();
-   set({ userData: response, userStatus: SyncStatus.SYNCED });
+   set({ userData: response.data, userStatus: SyncStatus.SYNCED });
   } catch (error) {
    set({ userStatus: SyncStatus.FAILED });
    throw error;
