@@ -36,7 +36,9 @@ function Login() {
       >
         <span className='flex items-center justify-between w-full'>
           <Label htmlFor='email'>Password</Label>
-          <button className='text-xs '>Forgot Password?</button>
+           <Link to='/auth/changepassword' className='text-primary mx-1 font-medium'>
+            Forgot Password?
+          </Link>
         </span>
 
         <Input
