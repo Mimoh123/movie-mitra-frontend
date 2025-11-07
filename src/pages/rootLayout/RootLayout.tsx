@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
-import { Film, Home, Heart, UserCircle } from 'lucide-react';
+import { Home, Heart, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logo from './././../../public/logo.png';
 import { getAllMovies } from '@/utils/API';

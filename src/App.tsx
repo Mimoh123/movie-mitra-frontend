@@ -1,15 +1,16 @@
-import React from 'react';
 import { Route, Routes } from 'react-router';
 import AuthLayout from './pages/auth/AuthLayout';
 import Login from './pages/auth/Login';
 import SignUp from './pages/auth/SignUp';
+import ChangePassword from './pages/auth/ChangePassword.tsx';
 import RootLayout from './pages/rootLayout/RootLayout';
 
 import Home from './pages/home/Home';
+import Watchlist from './pages/watchlist/Watchlist';
 import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
-import Watchlist from './pages/watchlist';
+// import Watchlist from './pages/watchlist';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path='/auth' element={<AuthLayout />}>
             <Route path='login' element={<Login />} />
             <Route path='register' element={<SignUp />} />
+            <Route path='changepassword' element={<ChangePassword />} />
           </Route>
           <Route path='/' element={<RootLayout />}>
             <Route path='/' element={<Home />} />
