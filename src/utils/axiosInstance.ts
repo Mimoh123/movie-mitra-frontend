@@ -27,8 +27,10 @@ axiosInstance.interceptors.response.use((response) => {
  return response;
 }, (error) => {
  if (error.response.status === 401) {
-  localStorage.removeItem("token");
-  window.location.href = "/auth/login";
+  setTimeout(() => {
+   localStorage.removeItem("token");
+   window.location.href = "/auth/login";
+  }, 100000);
  }
  return Promise.reject(error);
 })

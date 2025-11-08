@@ -35,7 +35,7 @@ export function GenreSection({ title, movies }: GenreSectionProps) {
                 key={movie.id}
                 className='pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6'
               >
-                <MovieCard {...movie} />
+                <MovieCard movie={movie} />
               </CarouselItem>
             ))}
           </CarouselContent>

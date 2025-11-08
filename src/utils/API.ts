@@ -1,5 +1,6 @@
 import axios from "axios";
 import { axiosInstance } from "./axiosInstance";
+import type { TMDBMovie } from "@/types";
 
 
 const apikey = import.meta.env.VITE_API_KEY;
@@ -47,3 +48,34 @@ export const getUserData = async () => {
 }
 
 
+export const createWatchListApi = async (watchList: TMDBMovie) => {
+ try {
+  const response = await axiosInstance.post(`/watchlist`, watchList)
+  return response.data
+ }
+ catch (err) {
+  throw err
+ }
+}
+
+
+export const getWatchListsApi = async () => {
+ try {
+  const response = await axiosInstance.get(`/watchlist/user/get`)
+  return response.data
+ }
+ catch (err) {
+  throw err
+ }
+}
+
+
+export const deleteWatchListApi = async (movie: TMDBMovie) => {
+ try {
+  const response = await axiosInstance.delete(`/watchlist/${movie.id}`)
+  return response.data
+ }
+ catch (err) {
+  throw err
+ }
+}
