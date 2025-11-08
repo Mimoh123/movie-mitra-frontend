@@ -132,3 +132,31 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Mantine Select dropdown option styling - blue hover with white text */
+.mantine-Select-option[data-hovered],
+.mantine-Select-option[data-combobox-hovered],
+[data-mantine-color-scheme] .mantine-Select-option[data-hovered],
+div[data-mantine-component='Select'] .mantine-Select-option[data-hovered],
+.mantine-Select-dropdown .mantine-Select-option[data-hovered],
+.mantine-Select-option:hover,
+.mantine-Select-dropdown [data-hovered],
+.mantine-Select-dropdown [data-combobox-hovered] {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+.mantine-Select-option[data-selected] {
+  background-color: #339af0 !important;
+  color: white !important;
+  font-weight: 500;
+}
+
+.mantine-Select-option[data-selected][data-hovered],
+.mantine-Select-option[data-selected][data-combobox-hovered],
+div[data-mantine-component='Select']
+  .mantine-Select-option[data-selected][data-hovered],
+.mantine-Select-option[data-selected]:hover {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}

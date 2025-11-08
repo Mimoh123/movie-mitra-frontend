@@ -10,21 +10,19 @@ function Recommendation() {
   const [searchParams, setSearchParams] = useSearchParams();
   const movieIdFromUrl = searchParams.get('movieId');
 
-  // Use dropdown movies from store
   const { movies: dropdownMovies, status: dropdownStatus } =
     useDropdownMoviesStore();
 
-  // Use recommendations from store
   const {
     recommendations,
     status: recommendationsStatus,
     selectedValue,
+    selectedMovieId,
     fetchRecommendations,
     clearRecommendations,
     setSelectedValue,
   } = useRecommendationsStore();
 
-  // Create select options from dropdown movies
   const selectOptions = useMemo(() => {
     return dropdownMovies.map((movie) => ({
       value: String(movie.movie_id),
@@ -44,13 +42,22 @@ function Recommendation() {
 
   // Handle initial movieId from URL
   useEffect(() => {
-    if (movieIdFromUrl && !selectedValue) {
+    if (movieIdFromUrl) {
       const movieId = Number(movieIdFromUrl);
-      setSelectedValue(movieIdFromUrl);
-      fetchRecommendations(movieId);
+      // Only fetch if the movieId is different from the currently selected one
+      if (selectedMovieId !== movieId) {
+        setSelectedValue(movieIdFromUrl);
+        fetchRecommendations(movieId);
+      }
       setSearchParams({}, { replace: true });
     }
-  }, [movieIdFromUrl, fetchRecommendations, setSearchParams, selectedValue]);
+  }, [
+    movieIdFromUrl,
+    fetchRecommendations,
+    setSearchParams,
+    selectedMovieId,
+    setSelectedValue,
+  ]);
 
   // Handle select change
   const handleSelectChange = useCallback(
@@ -123,6 +130,7 @@ function Recommendation() {
           dropdownOpened={dropdownOpened}
           onDropdownOpen={handleDropdownOpen}
           onDropdownClose={handleDropdownClose}
+          className='hover:bg-gray-800'
           rightSection={
             <div className='flex items-center gap-2'>
               {selectedValue && (
@@ -165,13 +173,6 @@ function Recommendation() {
               borderColor: '#404040',
               color: 'white',
             },
-            // option: {
-            //   backgroundColor: '#111827',
-            //   color: 'white',
-            //   '&:hover': {
-            //     backgroundColor: '#262626',
-            //   },
-            // },
             section: {
               marginLeft: '1rem',
               paddingRight: '2rem',
