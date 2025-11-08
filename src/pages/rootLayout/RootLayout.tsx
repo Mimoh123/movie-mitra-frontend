@@ -79,8 +79,8 @@ function RootLayout() {
                         onClick={() => setActiveTab(item.path)}
                         className={`flex items-center gap-2 ${
                           isActive
-                            ? 'bg-neutral-800 text-white'
-                            : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
+                            ? ' text-white'
+                            : 'text-neutral-400 hover:text-white hover:bg-gray-800'
                         } `}
                       >
                         {item.icon && <Icon className='h-4 w-4' />}
