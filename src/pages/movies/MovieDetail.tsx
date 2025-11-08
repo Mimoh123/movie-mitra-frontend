@@ -1,19 +1,23 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import { Loader } from '@mantine/core';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { TMDBMovie } from '@/types';
 import { getGenreName } from '@/data/genreId';
-import { createWatchListApi, deleteWatchListApi } from '@/utils/API';
-import { useWatchListStore } from '@/stores';
+import {
+  createWatchListApi,
+  deleteWatchListApi,
+  getMovieById,
+} from '@/utils/API';
+import { useWatchListStore, useMovieStore } from '@/stores';
 import { toast } from 'sonner';
 
-export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
-  const [isVisible, setIsVisible] = useState(true);
-  const [displayedMovie, setDisplayedMovie] = useState<TMDBMovie>(movie);
+function MovieDetail() {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { movies } = useMovieStore();
   const {
     addWatchList,
     deleteWatchList,
@@ -21,6 +25,78 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
     setLoadingMovie,
     loadingMovies,
   } = useWatchListStore();
+
+  const [movie, setMovie] = useState<TMDBMovie | null>(null);
+  const [isFetchingMovie, setIsFetchingMovie] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchMovie = async () => {
+      if (!id) {
+        setError('Movie ID is required');
+        setIsFetchingMovie(false);
+        return;
+      }
+
+      // First, try to find movie in store
+      const foundMovie = movies.find((m) => {
+        const movieId = (m as any).movie_id ?? m.id;
+        return String(movieId) === id || String(m.id) === id;
+      });
+
+      if (foundMovie) {
+        setMovie(foundMovie);
+        setIsFetchingMovie(false);
+        setError(null);
+        return;
+      }
+
+      // If not found in store, fetch from TMDB API
+      setIsFetchingMovie(true);
+      try {
+        const fetchedMovie = await getMovieById(id);
+        setMovie(fetchedMovie);
+        setError(null);
+      } catch (err: any) {
+        const errorMessage =
+          err?.response?.data?.status_message ||
+          err?.message ||
+          'Failed to fetch movie';
+        setError(errorMessage);
+        toast.error(errorMessage);
+        // Navigate back after a short delay
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
+      } finally {
+        setIsFetchingMovie(false);
+      }
+    };
+
+    fetchMovie();
+  }, [id, movies, navigate]);
+
+  if (isFetchingMovie) {
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        <Loader size='lg' />
+      </div>
+    );
+  }
+
+  if (error || !movie) {
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        <div className='text-center'>
+          <p className='text-red-500 text-lg mb-4'>
+            {error || 'Movie not found'}
+          </p>
+          <Button onClick={() => navigate('/')}>Go Back Home</Button>
+        </div>
+      </div>
+    );
+  }
+
   const movieId = (movie as any).movie_id ?? movie.id;
   const isInWatchlist = watchLists.some((watchlistMovie) => {
     const watchlistMovieId =
@@ -29,16 +105,6 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
   });
   const isLoading = loadingMovies.has(movieId);
 
-  useEffect(() => {
-    if (movie.id !== displayedMovie.id) {
-      setIsVisible(false);
-      const timer1 = setTimeout(() => {
-        setDisplayedMovie(movie);
-        setTimeout(() => setIsVisible(true), 50);
-      }, 500);
-      return () => clearTimeout(timer1);
-    }
-  }, [movie, displayedMovie.id]);
   const createWatchList = async (movie: TMDBMovie) => {
     setLoadingMovie(movieId, true);
     try {
@@ -84,39 +150,25 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
   };
 
   return (
-    <div
-      className='relative h-[73vh] w-full overflow-hidden'
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        navigate(`/movies/${movieId}`);
-      }}
-    >
+    <div className='relative min-h-[73vh] w-full overflow-hidden'>
       <img
-        src={`https://image.tmdb.org/t/p/w1280/${displayedMovie.poster_path}`}
-        alt={displayedMovie.title}
-        className={`w-full h-full object-cover object-center transition-opacity duration-1000 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
+        src={`https://image.tmdb.org/t/p/w1280/${
+          movie.backdrop_path || movie.poster_path
         }`}
+        alt={movie.title}
+        className='w-full h-full object-cover object-center'
         loading='eager'
         onError={(e) => {
           const target = e.target as HTMLImageElement;
-          target.src = `https://image.tmdb.org/t/p/original/${displayedMovie.poster_path}`;
+          target.src = `https://image.tmdb.org/t/p/original/${movie.poster_path}`;
         }}
       />
       <div className='absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent' />
 
-      <div
-        className={`absolute bottom-0 left-0 right-0 p-8 md:p-16 transition-opacity duration-1000 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        <div className='container mx-auto max-w-7xl '>
+      <div className='absolute bottom-0 left-0 right-0 p-8 md:p-16'>
+        <div className='container mx-auto max-w-7xl'>
           <div className='flex flex-wrap gap-2 mb-6'>
-            <Badge className='bg-red-600 text-lg text-center px-5 text-white border-0'>
-              Trending Now
-            </Badge>
-            {displayedMovie.genre_ids.map((genreId) => (
+            {movie.genre_ids.map((genreId) => (
               <Badge
                 key={genreId}
                 variant='outline'
@@ -128,12 +180,27 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
           </div>
 
           <h1 className='text-white mb-4 max-w-2xl text-4xl font-bold'>
-            {displayedMovie.title}
+            {movie.title}
           </h1>
 
-          <p className='text-gray-300 mb-8 max-w-xl h-20 overflow-hidden whitespace-normal truncate'>
-            {displayedMovie.overview}
+          <p className='text-gray-300 mb-8 max-w-2xl text-lg leading-relaxed'>
+            {movie.overview}
           </p>
+
+          <div className='flex flex-wrap gap-4 mb-4'>
+            {movie.release_date && (
+              <div className='text-gray-300'>
+                <span className='font-semibold'>Release Date: </span>
+                {new Date(movie.release_date).toLocaleDateString()}
+              </div>
+            )}
+            {movie.vote_average > 0 && (
+              <div className='text-gray-300'>
+                <span className='font-semibold'>Rating: </span>
+                {movie.vote_average.toFixed(1)} / 10
+              </div>
+            )}
+          </div>
 
           <div className='flex flex-wrap gap-3'>
             <Button
@@ -186,3 +253,5 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
     </div>
   );
 }
+
+export default MovieDetail;

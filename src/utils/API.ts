@@ -70,6 +70,39 @@ export const getAllMovies = async (page: number = 1) => {
  }
 }
 
+export const getMovieById = async (movieId: number | string): Promise<TMDBMovie> => {
+ try {
+  const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apikey}&language=en-US`)
+  const data = response.data;
+
+  // Transform TMDB API response to match TMDBMovie type
+  // TMDB API returns genres as objects, but we need genre_ids array
+  const genreIds = data.genres ? data.genres.map((genre: { id: number; name: string }) => genre.id) : [];
+
+  return {
+   id: data.id,
+   movie_id: data.id,
+   adult: data.adult || false,
+   backdrop_path: data.backdrop_path,
+   genre_ids: genreIds,
+   original_language: data.original_language || 'en',
+   original_title: data.original_title || '',
+   overview: data.overview || null,
+   popularity: data.popularity || 0,
+   poster_path: data.poster_path,
+   release_date: data.release_date || null,
+   title: data.title || 'Unknown',
+   video: data.video || false,
+   vote_average: data.vote_average || 0,
+   vote_count: data.vote_count || 0,
+   isFavourite: undefined,
+  };
+ }
+ catch (err) {
+  throw err
+ }
+}
+
 export const getUserData = async () => {
  try {
   const response = await axiosInstance.get(`/user`)

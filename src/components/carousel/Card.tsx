@@ -69,7 +69,10 @@ export function MovieCard({ movie }: { movie: TMDBMovie }) {
   };
 
   return (
-    <Card className='bg-gray-900 border-gray-800 overflow-hidden group cursor-pointer transition-all hover:scale-105 hover:border-gray-600 w-full'>
+    <Card
+      className='bg-gray-900 border-gray-800 overflow-hidden group cursor-pointer transition-all hover:scale-105 hover:border-gray-600 w-full'
+      onClick={() => navigate(`/movies/${movieId}`)}
+    >
       <div className='relative aspect-[3/4] overflow-hidden bg-gray-900'>
         <img
           src={
@@ -89,7 +92,10 @@ export function MovieCard({ movie }: { movie: TMDBMovie }) {
             }
           }}
         />
-        <div className='absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2'>
+        <div
+          className='absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2'
+          // onClick={(e) => e.stopPropagation()}
+        >
           <Button
             size='sm'
             className='bg-white text-black hover:bg-gray-200'

@@ -16,6 +16,7 @@ import { Toaster } from 'sonner';
 import Watchlist from './pages/watchlist';
 import Recommendation from './pages/recommendation';
 import Profile from './pages/profile';
+import MovieDetail from './pages/movies/MovieDetail';
 import { useUserStore, useWatchListStore } from './stores';
 import { SyncStatus } from './types';
 
@@ -48,6 +49,7 @@ function App() {
           <Route path='/change-password' element={<ChangePassword />} />
           <Route path='/' element={<RootLayout />}>
             <Route path='/' element={<Home />} />
+            <Route path='movies/:id' element={<MovieDetail />} />
             <Route path='recommendation' element={<Recommendation />} />
             <Route path='watchlist' element={<Watchlist />} />
             <Route path='profile' element={<Profile />} />

@@ -100,6 +100,7 @@ function Recommendation() {
       e.preventDefault();
       setDropdownOpened(false);
       handleSelectChange(null);
+      clearRecommendations();
       // Blur any active element to prevent Select from opening
       setTimeout(() => {
         if (document.activeElement instanceof HTMLElement) {
