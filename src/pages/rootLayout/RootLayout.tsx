@@ -31,7 +31,7 @@ function RootLayout() {
 
   useEffect(() => {
     if (status === SyncStatus.LOCAL) {
-      // fetchMovies();
+      fetchMovies();
     }
   }, [status, fetchMovies]);
 

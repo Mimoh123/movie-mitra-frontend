@@ -30,8 +30,7 @@ export function MovieCard({ movie }: { movie: TMDBMovie }) {
   const deleteWatchListFunction = async (movie: TMDBMovie) => {
     try {
       const response = await deleteWatchListApi(movie);
-      console.log('this is the response', response);
-      console.log('this is the movie', movie.id);
+
       if (response) {
         deleteWatchList(movie.id);
       }
