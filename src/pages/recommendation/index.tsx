@@ -18,8 +18,10 @@ function Recommendation() {
   const {
     recommendations,
     status: recommendationsStatus,
+    selectedValue,
     fetchRecommendations,
     clearRecommendations,
+    setSelectedValue,
   } = useRecommendationsStore();
 
   // Create select options from dropdown movies
@@ -30,7 +32,6 @@ function Recommendation() {
     }));
   }, [dropdownMovies]);
 
-  const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const [dropdownOpened, setDropdownOpened] = useState(false);
 
   const isLoading =
@@ -61,7 +62,7 @@ function Recommendation() {
         clearRecommendations();
       }
     },
-    [fetchRecommendations, clearRecommendations]
+    [fetchRecommendations, clearRecommendations, setSelectedValue]
   );
 
   // Handle clear selection

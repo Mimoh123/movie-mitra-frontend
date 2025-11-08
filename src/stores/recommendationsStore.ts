@@ -8,9 +8,11 @@ interface RecommendationsState {
   status: SyncStatus;
   selectedMovieId: number | null;
   selectedMovieTitle: string | null;
+  selectedValue: string | null;
 
   fetchRecommendations: (movieId?: number, movieTitle?: string) => Promise<void>;
   clearRecommendations: () => void;
+  setSelectedValue: (value: string | null) => void;
 }
 
 const initialState = {
@@ -18,6 +20,7 @@ const initialState = {
   status: SyncStatus.LOCAL,
   selectedMovieId: null,
   selectedMovieTitle: null,
+  selectedValue: null,
 };
 
 export const useRecommendationsStore = create<RecommendationsState>((set) => ({
@@ -45,6 +48,7 @@ export const useRecommendationsStore = create<RecommendationsState>((set) => ({
           status: SyncStatus.SYNCED,
           selectedMovieId: movieId || null,
           selectedMovieTitle: movieTitle || null,
+          selectedValue: movieId ? String(movieId) : null,
         });
       } else {
         set({ status: SyncStatus.FAILED });
@@ -61,7 +65,11 @@ export const useRecommendationsStore = create<RecommendationsState>((set) => ({
       status: SyncStatus.LOCAL,
       selectedMovieId: null,
       selectedMovieTitle: null,
+      selectedValue: null,
     });
+  },
+  setSelectedValue: (value: string | null) => {
+    set({ selectedValue: value });
   },
 }));
 
