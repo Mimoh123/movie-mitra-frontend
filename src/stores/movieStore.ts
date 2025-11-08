@@ -22,7 +22,7 @@ export const useMovieStore = create<MovieState>((set) => ({
   set({ status: SyncStatus.LOADING });
   try {
    let movies: TMDBMovie[] = [];
-   for (let i = 1; i <= 10; i++) {
+   for (let i = 5; i <= 15; i++) {
     const response = await getAllMovies(i);
     movies = [...(movies ?? []), ...response.results];
    }

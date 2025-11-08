@@ -12,7 +12,7 @@ function Recommendation() {
 
   const { movies: dropdownMovies, status: dropdownStatus } =
     useDropdownMoviesStore();
-
+  console.log('this is the dropdown movies', dropdownMovies.length);
   const {
     recommendations,
     status: recommendationsStatus,

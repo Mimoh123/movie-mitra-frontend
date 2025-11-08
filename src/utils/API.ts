@@ -62,7 +62,7 @@ export const changePasswordApi = async (currentPassword: string, newPassword: st
 
 export const getAllMovies = async (page: number = 1) => {
  try {
-  const response = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${apikey}&page=${page}`)
+  const response = await axios.get(`https://api.themoviedb.org/3/movie/top_rated?api_key=${apikey}&page=${page}`)
   return response.data
  }
  catch (err) {
