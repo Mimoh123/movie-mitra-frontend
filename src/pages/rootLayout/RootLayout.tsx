@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
-import { Film, Home, Heart, UserCircle } from 'lucide-react';
+import { Home, Heart, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import logo from './././../../public/logo.png';
-import { getAllMovies } from '@/utils/API';
-import { useMovieStore, useUserStore } from '@/stores';
+import { useMovieStore, useUserStore, useDropdownMoviesStore } from '@/stores';
 import { SyncStatus } from '@/types';
 const defaultNavItems = [
   { id: 'home', label: 'Home', icon: Home, path: '/' },
@@ -28,25 +26,34 @@ function RootLayout() {
   );
   const { movies, fetchMovies, status } = useMovieStore();
   const { userData, fetchUserData, userStatus } = useUserStore();
+  const { fetchDropdownMovies, status: dropdownStatus } =
+    useDropdownMoviesStore();
 
   useEffect(() => {
     if (status === SyncStatus.LOCAL) {
-      fetchMovies();
+      // fetchMovies();
     }
   }, [status, fetchMovies]);
+
+  // Fetch dropdown movies on mount
+  useEffect(() => {
+    if (dropdownStatus === SyncStatus.LOCAL) {
+      fetchDropdownMovies();
+    }
+  }, [dropdownStatus, fetchDropdownMovies]);
   useEffect(() => {
     console.log('this is the movies', movies);
   }, [movies]);
-  // Update token state when localStorage changes
+
   useEffect(() => {
     const checkToken = () => {
       setToken(localStorage.getItem('token'));
     };
-    // Check on mount
+
     checkToken();
-    // Listen for storage events (works across tabs)
+
     window.addEventListener('storage', checkToken);
-    // Also check when location changes (for same-tab changes)
+
     checkToken();
     return () => {
       window.removeEventListener('storage', checkToken);

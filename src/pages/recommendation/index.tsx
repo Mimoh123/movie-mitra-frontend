@@ -1,37 +1,94 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Select } from '@mantine/core';
 import { Search, X } from 'lucide-react';
-import type { TMDBMovie } from '@/types';
 import { MovieCard } from '@/components/carousel/Card';
-import { useWatchListStore } from '@/stores';
+import { useDropdownMoviesStore, useRecommendationsStore } from '@/stores';
+import { SyncStatus } from '@/types';
 
 function Recommendation() {
-  const [recommendations, setRecommendations] = useState<TMDBMovie[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { watchLists } = useWatchListStore();
   const movieIdFromUrl = searchParams.get('movieId');
 
-  // Create select options from watchlist movies
+  // Use dropdown movies from store
+  const { movies: dropdownMovies, status: dropdownStatus } =
+    useDropdownMoviesStore();
+
+  // Use recommendations from store
+  const {
+    recommendations,
+    status: recommendationsStatus,
+    fetchRecommendations,
+    clearRecommendations,
+  } = useRecommendationsStore();
+
+  // Create select options from dropdown movies
   const selectOptions = useMemo(() => {
-    return watchLists.map((movie) => {
-      const movieId = (movie as any).movie_id ?? movie.id;
-      return {
-        value: String(movieId),
-        label: movie.title,
-      };
-    });
-  }, [watchLists]);
+    return dropdownMovies.map((movie) => ({
+      value: String(movie.movie_id),
+      label: movie.title,
+    }));
+  }, [dropdownMovies]);
 
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const [dropdownOpened, setDropdownOpened] = useState(false);
 
+  const isLoading =
+    dropdownStatus === SyncStatus.LOADING ||
+    dropdownStatus === SyncStatus.INIT_LOADING;
+
+  const loadingRecommendations =
+    recommendationsStatus === SyncStatus.LOADING ||
+    recommendationsStatus === SyncStatus.AI_LOADING;
+
+  // Handle initial movieId from URL
   useEffect(() => {
-    setSelectedValue(movieIdFromUrl || null);
-    setSearchParams({});
-  }, []);
+    if (movieIdFromUrl && !selectedValue) {
+      const movieId = Number(movieIdFromUrl);
+      setSelectedValue(movieIdFromUrl);
+      fetchRecommendations(movieId);
+      setSearchParams({}, { replace: true });
+    }
+  }, [movieIdFromUrl, fetchRecommendations, setSearchParams, selectedValue]);
 
   // Handle select change
+  const handleSelectChange = useCallback(
+    (value: string | null) => {
+      setSelectedValue(value);
+      if (value) {
+        fetchRecommendations(Number(value));
+      } else {
+        clearRecommendations();
+      }
+    },
+    [fetchRecommendations, clearRecommendations]
+  );
+
+  // Handle clear selection
+  const handleClearSelection = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+      setDropdownOpened(false);
+      handleSelectChange(null);
+      // Blur any active element to prevent Select from opening
+      setTimeout(() => {
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
+      }, 0);
+    },
+    [handleSelectChange]
+  );
+
+  // Memoize dropdown handlers
+  const handleDropdownOpen = useCallback(() => {
+    setDropdownOpened(true);
+  }, []);
+
+  const handleDropdownClose = useCallback(() => {
+    setDropdownOpened(false);
+  }, []);
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-[5%] py-8'>
@@ -53,31 +110,23 @@ function Recommendation() {
         }`}
       >
         <Select
-          placeholder='Search for recommendations...'
+          placeholder={
+            isLoading ? 'Loading movies...' : 'Search for recommendations...'
+          }
           data={selectOptions}
           value={selectedValue}
-          onChange={(value) => setSelectedValue(value)}
+          onChange={handleSelectChange}
           searchable
           size='xl'
+          disabled={isLoading}
           dropdownOpened={dropdownOpened}
-          onDropdownOpen={() => setDropdownOpened(true)}
-          onDropdownClose={() => setDropdownOpened(false)}
+          onDropdownOpen={handleDropdownOpen}
+          onDropdownClose={handleDropdownClose}
           rightSection={
             <div className='flex items-center gap-2'>
               {selectedValue && (
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setDropdownOpened(false);
-                    setSelectedValue(null);
-                    // Blur any active element to prevent Select from opening
-                    setTimeout(() => {
-                      if (document.activeElement instanceof HTMLElement) {
-                        document.activeElement.blur();
-                      }
-                    }, 0);
-                  }}
+                  onClick={handleClearSelection}
                   onPointerDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -113,14 +162,15 @@ function Recommendation() {
             dropdown: {
               backgroundColor: '#111827',
               borderColor: '#404040',
-            },
-            option: {
-              backgroundColor: '#111827',
               color: 'white',
-              '&:hover': {
-                backgroundColor: '#262626',
-              },
             },
+            // option: {
+            //   backgroundColor: '#111827',
+            //   color: 'white',
+            //   '&:hover': {
+            //     backgroundColor: '#262626',
+            //   },
+            // },
             section: {
               marginLeft: '1rem',
               paddingRight: '2rem',
@@ -130,7 +180,11 @@ function Recommendation() {
       </div>
 
       {/* Recommendations Grid */}
-      {recommendations.length > 0 ? (
+      {loadingRecommendations ? (
+        <div className='text-gray-400 text-center py-12'>
+          <p>Loading recommendations...</p>
+        </div>
+      ) : recommendations.length > 0 ? (
         <div className='w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6'>
           {recommendations.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />

@@ -134,3 +134,30 @@ export const getMovieInMatrixApi = async () => {
   throw err
  }
 }
+
+export const getDropdownMoviesApi = async () => {
+ try {
+  const response = await pythonAxiosInstance.get(`/movies/dropdown`)
+  return response.data
+ }
+ catch (err) {
+  throw err
+ }
+}
+
+export const getRecommendationsApi = async (movieId?: number, movieTitle?: string) => {
+ try {
+  const params: Record<string, string> = {};
+  if (movieId) {
+   params.movie_id = movieId.toString();
+  }
+  if (movieTitle) {
+   params.movie_title = movieTitle;
+  }
+  const response = await pythonAxiosInstance.get(`/recommend`, { params })
+  return response.data
+ }
+ catch (err) {
+  throw err
+ }
+}
