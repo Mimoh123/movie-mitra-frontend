@@ -57,13 +57,13 @@ function RootLayout() {
   }, [userStatus, userData, token]);
 
   return (
-    <div className='w-full min-h-screen flex flex-col justify-between items-center bg-[#2D2C2C] '>
+    <div className='w-full min-h-screen flex flex-col justify-between items-center bg-gray-950 '>
       <section className=' text-white w-full '>
-        <nav className='border-b border-neutral-800 bg-black'>
-          <div className='container mx-auto px-4'>
-            <div className='flex items-center justify-between py-4'>
+        <nav className='border-b border-neutral-800 bg-gray-900'>
+          <div className='container '>
+            <div className='flex items-center justify-between py-4 px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-[5%]'>
               <Link to='/' className='flex items-center gap-3'>
-                <img src={logo} alt='logo' className='h-10 w-10' />
+                {/* <img src={logo} alt='logo' className='h-10 w-10' /> */}
                 <h1 className='text-2xl font-bold'>MovieMitra</h1>
               </Link>
 

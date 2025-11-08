@@ -9,7 +9,12 @@ import { useWatchListStore } from '@/stores';
 
 export function MovieCard({ movie }: { movie: TMDBMovie }) {
   const [isLiked, setIsLiked] = useState(false);
-  const { addWatchList, deleteWatchList } = useWatchListStore();
+  const { addWatchList, deleteWatchList, watchLists } = useWatchListStore();
+  const movieId = (movie as any).movie_id ?? movie.id;
+  const isInWatchlist = watchLists.some((watchlistMovie) => {
+    const watchlistMovieId = (watchlistMovie as any).movie_id;
+    return watchlistMovieId === movieId;
+  });
 
   const createWatchList = async (movie: TMDBMovie) => {
     try {
@@ -23,6 +28,8 @@ export function MovieCard({ movie }: { movie: TMDBMovie }) {
   const deleteWatchListFunction = async (movie: TMDBMovie) => {
     try {
       const response = await deleteWatchListApi(movie);
+      console.log('this is the response', response);
+      console.log('this is the movie', movie.id);
       if (response) {
         deleteWatchList(movie.id);
       }
@@ -32,7 +39,7 @@ export function MovieCard({ movie }: { movie: TMDBMovie }) {
   };
 
   return (
-    <Card className='bg-neutral-900 border-neutral-800 overflow-hidden group cursor-pointer transition-all hover:scale-105 hover:border-neutral-600 w-full'>
+    <Card className='bg-gray-900 border-neutral-800 overflow-hidden group cursor-pointer transition-all hover:scale-105 hover:border-neutral-600 w-full'>
       <div className='relative aspect-[3/4] overflow-hidden bg-neutral-800'>
         <img
           src={
@@ -57,15 +64,29 @@ export function MovieCard({ movie }: { movie: TMDBMovie }) {
             size='sm'
             className='bg-white text-black hover:bg-neutral-200'
           >
-            <Play className='h-4 w-4 mr-1' />
-            Play
+            Recommend
           </Button>
           <Button
             size='sm'
             variant='outline'
             className='border-white text-white hover:bg-white hover:text-black'
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              if (isInWatchlist || movie.isFavourite) {
+                deleteWatchListFunction(movie);
+              } else {
+                createWatchList(movie);
+              }
+            }}
           >
-            <Plus className='h-4 w-4' />
+            <Heart
+              className={`h-5 w-5 ${
+                isInWatchlist || movie.isFavourite || isLiked
+                  ? 'fill-red-600 text-red-600'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            />
           </Button>
         </div>
         <div className='absolute top-3 right-3'>
@@ -75,8 +96,8 @@ export function MovieCard({ movie }: { movie: TMDBMovie }) {
           </Badge>
         </div>
       </div>
-      <div className='p-2 sm:p-3 md:p-4'>
-        <h3 className='text-white truncate mb-1 sm:mb-2 text-sm sm:text-base'>
+      <div className='p-2 sm:p-3 md:p-4 !py-0'>
+        <h3 className='text-white truncate mb-1 sm:mb-1 text-sm sm:text-base'>
           {movie.title}
         </h3>
         <div className='flex items-center gap-1 sm:gap-2 mb-2 sm:mb-3 md:mb-4 flex-wrap'>
@@ -84,32 +105,35 @@ export function MovieCard({ movie }: { movie: TMDBMovie }) {
             {movie.release_date}
           </span>
         </div>
-        <div className='flex items-center gap-1 sm:gap-2'>
-          <Button size='sm' variant='outline'>
-            Recommend
-          </Button>
+        {/* <div className='flex items-center justify-between'>
           <Button
             size='sm'
+            className=' text-neutral-400 bg-inherit border-b border-white shadow-none rounded-none'
+          >
+            Recommend
+          </Button>
+          <button
             type='button'
-            variant='outline'
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              if (movie.isFavourite) {
+              if (isInWatchlist || movie.isFavourite) {
                 deleteWatchListFunction(movie);
               } else {
                 createWatchList(movie);
               }
             }}
-            className={`flex-1 transition-colors ${
-              movie.isFavourite
-                ? 'bg-red-600 border-red-600 text-white hover:bg-red-700 hover:border-red-700'
-                : 'border-neutral-700 text-neutral-400 hover:border-neutral-600 hover:text-white hover:bg-neutral-800'
-            }`}
+            className='cursor-pointer transition-colors hover:opacity-80'
           >
-            <Heart className={`h-3 w-3 ${isLiked ? 'fill-current' : ''}`} />
-          </Button>
-        </div>
+            <Heart
+              className={`h-5 w-5 ${
+                isInWatchlist || movie.isFavourite || isLiked
+                  ? 'fill-red-600 text-red-600'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            />
+          </button>
+        </div> */}
       </div>
     </Card>
   );

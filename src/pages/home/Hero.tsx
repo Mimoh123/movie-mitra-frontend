@@ -1,13 +1,22 @@
 import { useState, useEffect } from 'react';
-import { Play, Plus, Info } from 'lucide-react';
+import { Play, Plus, Info, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { TMDBMovie } from '@/types';
 import { getGenreName } from '@/data/genreId';
+import { createWatchListApi, deleteWatchListApi } from '@/utils/API';
+import { useWatchListStore } from '@/stores';
 
 export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
+  const [isLiked, setIsLiked] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [displayedMovie, setDisplayedMovie] = useState<TMDBMovie>(movie);
+  const { addWatchList, deleteWatchList, watchLists } = useWatchListStore();
+  const movieId = (movie as any).movie_id ?? movie.id;
+  const isInWatchlist = watchLists.some((watchlistMovie) => {
+    const watchlistMovieId = (watchlistMovie as any).movie_id;
+    return watchlistMovieId === movieId;
+  });
 
   useEffect(() => {
     if (movie.id !== displayedMovie.id) {
@@ -19,6 +28,27 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
       return () => clearTimeout(timer1);
     }
   }, [movie, displayedMovie.id]);
+  const createWatchList = async (movie: TMDBMovie) => {
+    try {
+      const response = await createWatchListApi(movie);
+      addWatchList(response.data as TMDBMovie);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const deleteWatchListFunction = async (movie: TMDBMovie) => {
+    try {
+      const response = await deleteWatchListApi(movie);
+      console.log('this is the response', response);
+      console.log('this is the movie', movie.id);
+      if (response) {
+        deleteWatchList(movie.id);
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
 
   return (
     <div className='relative h-[73vh] w-full overflow-hidden'>
@@ -68,26 +98,31 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
           <div className='flex flex-wrap gap-3'>
             <Button
               size='lg'
-              className='bg-white text-black hover:bg-neutral-200'
+              className='bg-white text-black !font-semibold hover:bg-neutral-200 cursor-pointer'
             >
-              <Play className='h-5 w-5 mr-2' />
-              Watch Now
+              Recommend
             </Button>
             <Button
               size='lg'
               variant='outline'
-              className='border-neutral-600 text-white hover:bg-neutral-900'
+              className='border-white text-white hover:bg-white hover:text-black cursor-pointer'
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (isInWatchlist || movie.isFavourite) {
+                  deleteWatchListFunction(movie);
+                } else {
+                  createWatchList(movie);
+                }
+              }}
             >
-              <Plus className='h-5 w-5 mr-2' />
-              My List
-            </Button>
-            <Button
-              size='lg'
-              variant='outline'
-              className='border-neutral-600 text-white hover:bg-neutral-900'
-            >
-              <Info className='h-5 w-5 mr-2' />
-              More Info
+              <Heart
+                className={`h-5 w-5 ${
+                  isInWatchlist || movie.isFavourite || isLiked
+                    ? 'fill-red-600 text-red-600'
+                    : 'text-neutral-400 hover:text-white'
+                }`}
+              />
             </Button>
           </div>
         </div>

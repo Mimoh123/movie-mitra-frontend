@@ -1,16 +1,14 @@
 import { MovieCard } from '@/components/carousel/Card';
-import { GenreSection } from '@/components/carousel/GenereSection';
-import { actionMovies } from '@/data/movieData';
 import { useWatchListStore } from '@/stores';
-import React from 'react';
 
 function Watchlist() {
   const { watchLists } = useWatchListStore();
 
   return (
-    <div className=' flex flex-col space-y-10 py-10'>
+    <div className=' flex flex-col space-y-10 py-10 px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-[5%]'>
+      <h1 className='text-2xl font-bold'>Watchlist</h1>
       {watchLists.length > 0 ? (
-        <section className=''>
+        <section className='grid grid-cols-4 gap-10'>
           {watchLists.map((movie) => (
             <MovieCard movie={movie} />
           ))}
