@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { loginApi } from '@/utils/API';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { Loader2 } from 'lucide-react';
 import { Icon } from '@iconify/react';
 
 function Login() {
@@ -25,6 +26,9 @@ function Login() {
       console.log(err);
     }
   };
+
+  const [forgotLoading, setForgotLoading] = useState(false);
+  
 
   return (
     <div className='flex relative items-center justify-center h-screen bg-black w-screen'>
@@ -63,10 +67,17 @@ function Login() {
             <Label htmlFor='password' className='text-neutral-300'>
               Password
             </Label>
-            <button
+           <button
               type='button'
-              className='text-xs text-neutral-400 hover:text-neutral-300 transition-colors'
+              className='text-white mx-1 font-semibold hover:text-neutral-300 transition-colors underline underline-offset-2 flex items-center gap-2'
+              onClick={() => {
+                setForgotLoading(true);
+                // small delay to show loader briefly then navigate
+                setTimeout(() => navigate('/auth/change-password'), 200);
+              }}
+              disabled={forgotLoading}
             >
+              {forgotLoading ? <Loader2 className='w-4 h-4 animate-spin' /> : null}
               Forgot Password?
             </button>
           </span>

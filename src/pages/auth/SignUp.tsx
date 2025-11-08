@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { registerApi } from '@/utils/API';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Loader2 } from 'lucide-react';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ function SignUp() {
     password: '',
   });
   const handleSignUp = async () => {
+    setSubmitting(true);
     try {
       const response = await registerApi(
         formData.name,
@@ -28,8 +30,12 @@ function SignUp() {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setSubmitting(false);
     }
   };
+  const [submitting, setSubmitting] = useState(false);
+  const [backLoading, setBackLoading] = useState(false);
   return (
     <form
       onSubmit={(e) => {
@@ -84,9 +90,24 @@ function SignUp() {
         />
       </section>
       <section className='w-full'>
-        <Button type='submit' className='w-full cursor-pointer'>
-          Register
+        <Button type='submit' className='w-full cursor-pointer' disabled={submitting}>
+          {submitting ? <Loader2 className='w-4 h-4 animate-spin mr-2' /> : null}
+          {submitting ? 'Registering...' : 'Register'}
         </Button>
+      </section>
+      <section className='w-full text-center'>
+        <button
+          type='button'
+          className='text-sm text-neutral-400 mt-4 hover:underline inline-flex items-center gap-2'
+          onClick={() => {
+            setBackLoading(true);
+            setTimeout(() => navigate('/auth/login'), 200);
+          }}
+          disabled={backLoading}
+        >
+          {backLoading ? <Loader2 className='w-4 h-4 animate-spin' /> : null}
+          Back to login
+        </button>
       </section>
     </form>
   );
