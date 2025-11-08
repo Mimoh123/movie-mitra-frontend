@@ -16,6 +16,7 @@ function Login() {
       password: '',
     }
   );
+  const [showPassword, setShowPassword] = useState(false);
   const handleLogin = async () => {
     try {
       const response = await loginApi(formData.email, formData.password);
@@ -31,7 +32,7 @@ function Login() {
   };
 
   return (
-    <div className='flex relative items-center justify-center h-screen bg-black w-screen'>
+    <div className='flex relative items-center justify-center h-screen bg-gray-950 w-screen'>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -75,16 +76,29 @@ function Login() {
             </Link>
           </span>
 
-          <Input
-            type='password'
-            placeholder='Password'
-            defaultValue={formData.password}
-            onChange={(e) => {
-              setFormData({ ...formData, password: e.target.value });
-            }}
-            className='bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-600'
-            required
-          />
+          <div className='relative'>
+            <Input
+              type={showPassword ? 'text' : 'password'}
+              placeholder='Password'
+              defaultValue={formData.password}
+              onChange={(e) => {
+                setFormData({ ...formData, password: e.target.value });
+              }}
+              className='bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-600 pr-10'
+              required
+            />
+            <button
+              type='button'
+              onClick={() => setShowPassword(!showPassword)}
+              className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors'
+            >
+              <Icon
+                icon={showPassword ? 'mdi:eye-off' : 'mdi:eye'}
+                width='20'
+                height='20'
+              />
+            </button>
+          </div>
         </section>
         <section className='w-full pt-2'>
           <Button

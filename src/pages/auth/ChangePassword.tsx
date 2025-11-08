@@ -21,6 +21,9 @@ function ChangePassword() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,7 +93,7 @@ function ChangePassword() {
   }
 
   return (
-    <div className='flex relative items-center justify-center h-screen bg-black w-screen'>
+    <div className='flex relative items-center justify-center h-screen bg-gray-950 w-screen'>
       <form
         onSubmit={handleChangePassword}
         className='border relative border-gray-800 rounded-lg flex flex-col items-center justify-center p-12 space-y-8 max-w-lg w-full bg-gray-900 shadow-2xl'
@@ -121,53 +124,95 @@ function ChangePassword() {
           <Label htmlFor='currentPassword' className='text-gray-300'>
             Current Password
           </Label>
-          <Input
-            type='password'
-            placeholder='Enter current password'
-            value={formData.currentPassword}
-            onChange={(e) =>
-              setFormData({ ...formData, currentPassword: e.target.value })
-            }
-            className='bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-600'
-            required
-            disabled={isLoading}
-          />
+          <div className='relative'>
+            <Input
+              type={showCurrentPassword ? 'text' : 'password'}
+              placeholder='Enter current password'
+              value={formData.currentPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, currentPassword: e.target.value })
+              }
+              className='bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-600 pr-10'
+              required
+              disabled={isLoading}
+            />
+            <button
+              type='button'
+              onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+              className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors'
+              disabled={isLoading}
+            >
+              <Icon
+                icon={showCurrentPassword ? 'mdi:eye-off' : 'mdi:eye'}
+                width='20'
+                height='20'
+              />
+            </button>
+          </div>
         </section>
 
         <section className='space-y-3 w-full'>
           <Label htmlFor='newPassword' className='text-gray-300'>
             New Password
           </Label>
-          <Input
-            type='password'
-            placeholder='Enter new password'
-            value={formData.newPassword}
-            onChange={(e) =>
-              setFormData({ ...formData, newPassword: e.target.value })
-            }
-            className='bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-600'
-            required
-            disabled={isLoading}
-            minLength={6}
-          />
+          <div className='relative'>
+            <Input
+              type={showNewPassword ? 'text' : 'password'}
+              placeholder='Enter new password'
+              value={formData.newPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, newPassword: e.target.value })
+              }
+              className='bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-600 pr-10'
+              required
+              disabled={isLoading}
+              minLength={6}
+            />
+            <button
+              type='button'
+              onClick={() => setShowNewPassword(!showNewPassword)}
+              className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors'
+              disabled={isLoading}
+            >
+              <Icon
+                icon={showNewPassword ? 'mdi:eye-off' : 'mdi:eye'}
+                width='20'
+                height='20'
+              />
+            </button>
+          </div>
         </section>
 
         <section className='space-y-3 w-full'>
           <Label htmlFor='confirmPassword' className='text-gray-300'>
             Confirm New Password
           </Label>
-          <Input
-            type='password'
-            placeholder='Confirm new password'
-            value={formData.confirmPassword}
-            onChange={(e) =>
-              setFormData({ ...formData, confirmPassword: e.target.value })
-            }
-            className='bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-600'
-            required
-            disabled={isLoading}
-            minLength={6}
-          />
+          <div className='relative'>
+            <Input
+              type={showConfirmPassword ? 'text' : 'password'}
+              placeholder='Confirm new password'
+              value={formData.confirmPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
+              className='bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-600 pr-10'
+              required
+              disabled={isLoading}
+              minLength={6}
+            />
+            <button
+              type='button'
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors'
+              disabled={isLoading}
+            >
+              <Icon
+                icon={showConfirmPassword ? 'mdi:eye-off' : 'mdi:eye'}
+                width='20'
+                height='20'
+              />
+            </button>
+          </div>
         </section>
 
         <section className='w-full pt-4'>

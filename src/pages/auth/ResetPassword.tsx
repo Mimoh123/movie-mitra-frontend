@@ -21,6 +21,8 @@ function ResetPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -119,36 +121,64 @@ function ResetPassword() {
           <Label htmlFor='password' className='text-gray-300'>
             New Password
           </Label>
-          <Input
-            type='password'
-            placeholder='Enter new password'
-            value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-            className='bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-600'
-            required
-            disabled={isLoading || !token}
-            minLength={6}
-          />
+          <div className='relative'>
+            <Input
+              type={showPassword ? 'text' : 'password'}
+              placeholder='Enter new password'
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              className='bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-600 pr-10'
+              required
+              disabled={isLoading || !token}
+              minLength={6}
+            />
+            <button
+              type='button'
+              onClick={() => setShowPassword(!showPassword)}
+              className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors'
+              disabled={isLoading || !token}
+            >
+              <Icon
+                icon={showPassword ? 'mdi:eye-off' : 'mdi:eye'}
+                width='20'
+                height='20'
+              />
+            </button>
+          </div>
         </section>
 
         <section className='space-y-2 w-full'>
           <Label htmlFor='confirmPassword' className='text-gray-300'>
             Confirm Password
           </Label>
-          <Input
-            type='password'
-            placeholder='Confirm new password'
-            value={formData.confirmPassword}
-            onChange={(e) =>
-              setFormData({ ...formData, confirmPassword: e.target.value })
-            }
-            className='bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-600'
-            required
-            disabled={isLoading || !token}
-            minLength={6}
-          />
+          <div className='relative'>
+            <Input
+              type={showConfirmPassword ? 'text' : 'password'}
+              placeholder='Confirm new password'
+              value={formData.confirmPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
+              className='bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 focus:border-gray-600 pr-10'
+              required
+              disabled={isLoading || !token}
+              minLength={6}
+            />
+            <button
+              type='button'
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors'
+              disabled={isLoading || !token}
+            >
+              <Icon
+                icon={showConfirmPassword ? 'mdi:eye-off' : 'mdi:eye'}
+                width='20'
+                height='20'
+              />
+            </button>
+          </div>
         </section>
 
         <section className='w-full pt-2'>
