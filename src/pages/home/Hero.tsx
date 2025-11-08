@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Play, Plus, Info, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +12,7 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
   const [isLiked, setIsLiked] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [displayedMovie, setDisplayedMovie] = useState<TMDBMovie>(movie);
+  const navigate = useNavigate();
   const { addWatchList, deleteWatchList, watchLists } = useWatchListStore();
   const movieId = (movie as any).movie_id ?? movie.id;
   const isInWatchlist = watchLists.some((watchlistMovie) => {
@@ -71,7 +73,7 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <div className='container mx-auto max-w-7xl'>
+        <div className='container mx-auto max-w-7xl '>
           <div className='flex flex-wrap gap-2 mb-6'>
             <Badge className='bg-red-600 text-lg text-center px-5 text-white border-0'>
               Trending Now
@@ -80,7 +82,7 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
               <Badge
                 key={genreId}
                 variant='outline'
-                className='border-neutral-600 text-lg text-center px-5 text-neutral-300'
+                className='border-gray-600 text-lg text-center px-5 text-gray-300'
               >
                 {getGenreName(genreId)}
               </Badge>
@@ -91,14 +93,19 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
             {displayedMovie.title}
           </h1>
 
-          <p className='text-neutral-300 mb-8 max-w-xl h-20 overflow-hidden whitespace-normal truncate'>
+          <p className='text-gray-300 mb-8 max-w-xl h-20 overflow-hidden whitespace-normal truncate'>
             {displayedMovie.overview}
           </p>
 
           <div className='flex flex-wrap gap-3'>
             <Button
               size='lg'
-              className='bg-white text-black !font-semibold hover:bg-neutral-200 cursor-pointer'
+              className='bg-white text-black !font-semibold hover:bg-gray-200 cursor-pointer'
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                navigate(`/recommendation?movieId=${movieId}`);
+              }}
             >
               Recommend
             </Button>
@@ -120,7 +127,7 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
                 className={`h-5 w-5 ${
                   isInWatchlist || movie.isFavourite || isLiked
                     ? 'fill-red-600 text-red-600'
-                    : 'text-neutral-400 hover:text-white'
+                    : 'text-gray-400 hover:text-white'
                 }`}
               />
             </Button>

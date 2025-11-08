@@ -1,5 +1,5 @@
 import { SyncStatus } from "@/types";
-import { getUserData } from "@/utils/API";
+import { getUserData, updateUserApi } from "@/utils/API";
 import { create } from "zustand";
 
 
@@ -11,6 +11,8 @@ interface UserState {
  }
  userStatus: SyncStatus;
  fetchUserData: () => Promise<void>;
+ updateUserData: (userData: { name?: string; email?: string }) => Promise<void>;
+ resetUserData: () => void;
 }
 
 const initialState = {
@@ -33,5 +35,18 @@ export const useUserStore = create<UserState>((set) => ({
    set({ userStatus: SyncStatus.FAILED });
    throw error;
   }
+ },
+ updateUserData: async (userData: { name?: string; email?: string }) => {
+  set({ userStatus: SyncStatus.LOADING });
+  try {
+   const response = await updateUserApi(userData);
+   set({ userData: response.data, userStatus: SyncStatus.SYNCED });
+  } catch (error) {
+   set({ userStatus: SyncStatus.FAILED });
+   throw error;
+  }
+ },
+ resetUserData: () => {
+  set({ ...initialState });
  }
 }))

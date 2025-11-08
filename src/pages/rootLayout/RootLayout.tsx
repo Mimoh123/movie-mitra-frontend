@@ -9,7 +9,7 @@ import { SyncStatus } from '@/types';
 const defaultNavItems = [
   { id: 'home', label: 'Home', icon: Home, path: '/' },
   {
-    id: 'recommendator',
+    id: 'recommendation',
     label: 'Recommendation',
     path: '/recommendation',
   },
@@ -17,13 +17,15 @@ const defaultNavItems = [
   { id: 'login', label: 'Login', path: '/auth/login' },
 ];
 function RootLayout() {
-  const token = localStorage.getItem('token');
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(location.pathname);
   const [navItems, setNavItems] =
     useState<
       { id: string; label: string; icon?: React.ElementType; path: string }[]
     >(defaultNavItems);
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem('token')
+  );
   const { movies, fetchMovies, status } = useMovieStore();
   const { userData, fetchUserData, userStatus } = useUserStore();
 
@@ -35,33 +37,61 @@ function RootLayout() {
   useEffect(() => {
     console.log('this is the movies', movies);
   }, [movies]);
+  // Update token state when localStorage changes
+  useEffect(() => {
+    const checkToken = () => {
+      setToken(localStorage.getItem('token'));
+    };
+    // Check on mount
+    checkToken();
+    // Listen for storage events (works across tabs)
+    window.addEventListener('storage', checkToken);
+    // Also check when location changes (for same-tab changes)
+    checkToken();
+    return () => {
+      window.removeEventListener('storage', checkToken);
+    };
+  }, [location.pathname]);
+
   useEffect(() => {
     if (userStatus === SyncStatus.LOCAL && token) {
       fetchUserData();
     }
-  }, [userStatus, fetchUserData]);
+  }, [userStatus, fetchUserData, token]);
   useEffect(() => {
     console.log('this is the user data', userData);
   }, [userData]);
   useEffect(() => {
-    if (token && userData.name) {
+    const currentToken = localStorage.getItem('token');
+    if (currentToken && userData.name) {
       console.log('i am inside');
       const newNavItems = defaultNavItems.filter(
         (item) => item.id !== 'sign up' && item.id !== 'login'
       );
       setNavItems([
         ...newNavItems,
-        { id: 'profile', label: 'Profile', icon: UserCircle, path: '/profile' },
+        {
+          id: 'profile',
+          label: userData.name,
+          icon: UserCircle,
+          path: '/profile',
+        },
       ]);
+    } else if (!currentToken) {
+      // Reset to default nav items when logged out
+      setNavItems(defaultNavItems);
     }
   }, [userStatus, userData, token]);
+  useEffect(() => {
+    setActiveTab(location.pathname);
+  }, [location.pathname]);
 
   return (
     <div className='w-full min-h-screen flex flex-col justify-between items-center bg-gray-950 '>
       <section className=' text-white w-full '>
-        <nav className='border-b border-neutral-800 bg-gray-900'>
-          <div className='container '>
-            <div className='flex items-center justify-between py-4 px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-[5%]'>
+        <nav className='border-b border-gray-800 bg-gray-900'>
+          <div className='w-full '>
+            <div className='flex items-center justify-between py-4 px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-[5%] w-full'>
               <Link to='/' className='flex items-center gap-3'>
                 {/* <img src={logo} alt='logo' className='h-10 w-10' /> */}
                 <h1 className='text-2xl font-bold'>MovieMitra</h1>
@@ -70,7 +100,8 @@ function RootLayout() {
               <div className='flex items-center gap-1'>
                 {navItems.map((item) => {
                   const Icon = item.icon as React.ElementType;
-                  const isActive = activeTab === item.path;
+                  const isActive =
+                    activeTab.split('/')[1] === item.path.split('/')[1];
 
                   return (
                     <Link key={item.id} to={item.path}>
@@ -80,7 +111,7 @@ function RootLayout() {
                         className={`flex items-center gap-2 ${
                           isActive
                             ? ' text-white'
-                            : 'text-neutral-400 hover:text-white hover:bg-gray-800'
+                            : 'text-gray-400 hover:text-white hover:bg-gray-800'
                         } `}
                       >
                         {item.icon && <Icon className='h-4 w-4' />}

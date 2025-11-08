@@ -39,8 +39,8 @@ export function GenreSection({ title, movies }: GenreSectionProps) {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className='flex -left-2 sm:-left-4 md:-left-6 lg:-left-8 xl:-left-10 bg-black/70 hover:bg-black border-neutral-700 text-white z-10' />
-          <CarouselNext className='flex -right-2 sm:-right-4 md:-right-6 lg:-right-8 xl:-right-10 bg-black/70 hover:bg-black border-neutral-700 text-white z-10' />
+          <CarouselPrevious className='flex -left-2 sm:-left-4 md:-left-6 lg:-left-8 xl:-left-10 bg-black/70 hover:bg-black border-gray-700 text-white z-10' />
+          <CarouselNext className='flex -right-2 sm:-right-4 md:-right-6 lg:-right-8 xl:-right-10 bg-black/70 hover:bg-black border-gray-700 text-white z-10' />
         </Carousel>
       </div>
     </div>
