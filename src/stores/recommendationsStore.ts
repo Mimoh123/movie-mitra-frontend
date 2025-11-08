@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { TMDBMovie } from "@/types";
 import { SyncStatus } from "@/types";
 import { getRecommendationsApi } from "@/utils/API";
+import { toast } from "sonner";
 
 interface RecommendationsState {
   recommendations: TMDBMovie[];
@@ -28,7 +29,9 @@ export const useRecommendationsStore = create<RecommendationsState>((set) => ({
   fetchRecommendations: async (movieId?: number, movieTitle?: string) => {
     if (!movieId && !movieTitle) {
       set({ status: SyncStatus.FAILED });
-      throw new Error("Either movieId or movieTitle must be provided");
+      const error = new Error("Either movieId or movieTitle must be provided");
+      toast.error(error.message);
+      throw error;
     }
 
     set({ status: SyncStatus.LOADING });
@@ -52,10 +55,16 @@ export const useRecommendationsStore = create<RecommendationsState>((set) => ({
         });
       } else {
         set({ status: SyncStatus.FAILED });
+        toast.error("Invalid response format");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch recommendations:", error);
       set({ status: SyncStatus.FAILED });
+      if (error?.response) {
+        toast.error(error.response.data?.message || "Failed to fetch recommendations");
+      } else {
+        toast.error(error?.message || "Failed to fetch recommendations");
+      }
       throw error;
     }
   },

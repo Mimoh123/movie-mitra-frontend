@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { TMDBMovie } from "@/types";
 import { SyncStatus } from "@/types";
 import { getAllMovies } from "@/utils/API";
+import { toast } from "sonner";
 
 
 interface MovieState {
@@ -9,6 +10,7 @@ interface MovieState {
  status: SyncStatus,
 
  fetchMovies: () => Promise<void>,
+ clearMovies: () => void,
 }
 
 const initialState = {
@@ -34,9 +36,17 @@ export const useMovieStore = create<MovieState>((set) => ({
    });
    const uniqueMovies = Array.from(uniqueMoviesMap.values());
    set({ movies: uniqueMovies, status: SyncStatus.SYNCED });
-  } catch (error) {
+  } catch (error: any) {
    set({ status: SyncStatus.FAILED });
+   if (error?.response) {
+    toast.error(error.response.data?.message || "Failed to fetch movies");
+   } else {
+    toast.error(error?.message || "Failed to fetch movies");
+   }
    throw error;
   }
+ },
+ clearMovies: () => {
+  set({ ...initialState });
  }
 }))

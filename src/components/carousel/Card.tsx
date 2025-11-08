@@ -1,41 +1,70 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Star, Plus, Play, Heart } from 'lucide-react';
+import { Star, Heart } from 'lucide-react';
+import { Loader } from '@mantine/core';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { TMDBMovie } from '@/types';
 import { createWatchListApi, deleteWatchListApi } from '@/utils/API';
 import { useWatchListStore } from '@/stores';
+import { toast } from 'sonner';
 
 export function MovieCard({ movie }: { movie: TMDBMovie }) {
-  const [isLiked, setIsLiked] = useState(false);
   const navigate = useNavigate();
-  const { addWatchList, deleteWatchList, watchLists } = useWatchListStore();
+  const {
+    addWatchList,
+    deleteWatchList,
+    watchLists,
+    setLoadingMovie,
+    loadingMovies,
+  } = useWatchListStore();
   const movieId = (movie as any).movie_id ?? movie.id;
   const isInWatchlist = watchLists.some((watchlistMovie) => {
-    const watchlistMovieId = (watchlistMovie as any).movie_id;
+    const watchlistMovieId =
+      (watchlistMovie as any).movie_id ?? watchlistMovie.id;
     return watchlistMovieId === movieId;
   });
+  const isLoading = loadingMovies.has(movieId);
 
   const createWatchList = async (movie: TMDBMovie) => {
     try {
       const response = await createWatchListApi(movie);
       addWatchList(response.data as TMDBMovie);
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.response) {
+        toast.error(
+          error.response.data?.message || 'Failed to add to watchlist'
+        );
+      } else {
+        toast.error(error?.message || 'Failed to add to watchlist');
+      }
       throw error;
+    } finally {
+      setLoadingMovie(movieId, false);
     }
   };
 
   const deleteWatchListFunction = async (movie: TMDBMovie) => {
     try {
-      const response = await deleteWatchListApi(movie);
+      const id = watchLists.find((watch) => watch.movie_id === movieId)?.id;
+      const response = await deleteWatchListApi(
+        String(id || movie.movie_id || movie.id)
+      );
 
       if (response) {
-        deleteWatchList(movie.id);
+        deleteWatchList(movieId);
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.response) {
+        toast.error(
+          error.response.data?.message || 'Failed to remove from watchlist'
+        );
+      } else {
+        toast.error(error?.message || 'Failed to remove from watchlist');
+      }
       throw error;
+    } finally {
+      setLoadingMovie(movieId, false);
     }
   };
 
@@ -75,24 +104,35 @@ export function MovieCard({ movie }: { movie: TMDBMovie }) {
           <Button
             size='sm'
             variant='outline'
-            className='border-white text-white hover:bg-white hover:text-black'
+            className='border-white w-10 text-white hover:bg-white hover:text-black'
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              if (isInWatchlist || movie.isFavourite) {
-                deleteWatchListFunction(movie);
+              if (isInWatchlist) {
+                setLoadingMovie(movieId, true);
+                setTimeout(() => {
+                  deleteWatchListFunction(movie);
+                }, 1000);
               } else {
-                createWatchList(movie);
+                setLoadingMovie(movieId, true);
+                setTimeout(() => {
+                  createWatchList(movie);
+                }, 1000);
               }
             }}
+            disabled={isLoading}
           >
-            <Heart
-              className={`h-5 w-5 ${
-                isInWatchlist || movie.isFavourite || isLiked
-                  ? 'fill-red-600 text-red-600'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            />
+            {isLoading ? (
+              <Loader size={16} color='blue' />
+            ) : (
+              <Heart
+                className={`h-5 w-5 ${
+                  isInWatchlist
+                    ? 'fill-red-600 text-red-600'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              />
+            )}
           </Button>
         </div>
         <div className='absolute top-3 right-3'>

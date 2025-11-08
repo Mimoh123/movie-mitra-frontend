@@ -5,6 +5,7 @@ import { registerApi } from '@/utils/API';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Icon } from '@iconify/react';
+import { toast } from 'sonner';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -37,8 +38,12 @@ function SignUp() {
       if (response) {
         navigate('/auth/login');
       }
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      if (err?.response) {
+        toast.error(err.response.data?.message || 'Failed to register');
+      } else {
+        toast.error(err?.message || 'Failed to register');
+      }
     }
   };
   return (

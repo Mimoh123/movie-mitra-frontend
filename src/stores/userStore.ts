@@ -1,6 +1,7 @@
 import { SyncStatus } from "@/types";
 import { getUserData, updateUserApi } from "@/utils/API";
 import { create } from "zustand";
+import { toast } from "sonner";
 
 
 
@@ -31,8 +32,13 @@ export const useUserStore = create<UserState>((set) => ({
   try {
    const response = await getUserData();
    set({ userData: response.data, userStatus: SyncStatus.SYNCED });
-  } catch (error) {
+  } catch (error: any) {
    set({ userStatus: SyncStatus.FAILED });
+   if (error?.response) {
+    // toast.error(error.response.data?.message || "Failed to fetch user data");
+   } else {
+    // toast.error(error?.message || "Failed to fetch user data");
+   }
    throw error;
   }
  },
@@ -41,8 +47,13 @@ export const useUserStore = create<UserState>((set) => ({
   try {
    const response = await updateUserApi(userData);
    set({ userData: response.data, userStatus: SyncStatus.SYNCED });
-  } catch (error) {
+  } catch (error: any) {
    set({ userStatus: SyncStatus.FAILED });
+   if (error?.response) {
+    toast.error(error.response.data?.message || "Failed to update user data");
+   } else {
+    toast.error(error?.message || "Failed to update user data");
+   }
    throw error;
   }
  },

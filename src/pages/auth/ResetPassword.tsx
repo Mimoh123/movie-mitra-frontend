@@ -5,6 +5,7 @@ import { resetPasswordApi } from '@/utils/API';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { Icon } from '@iconify/react';
+import { toast } from 'sonner';
 
 function ResetPassword() {
   const navigate = useNavigate();
@@ -62,9 +63,16 @@ function ResetPassword() {
         }, 2000);
       }
     } catch (err: any) {
-      setError(
-        err.response?.data?.message || err.message || 'Failed to reset password'
-      );
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        'Failed to reset password';
+      setError(errorMessage);
+      if (err?.response) {
+        toast.error(err.response.data?.message || 'Failed to reset password');
+      } else {
+        toast.error(err?.message || 'Failed to reset password');
+      }
     } finally {
       setIsLoading(false);
     }

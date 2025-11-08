@@ -1,24 +1,33 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Play, Plus, Info, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
+import { Loader } from '@mantine/core';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { TMDBMovie } from '@/types';
 import { getGenreName } from '@/data/genreId';
 import { createWatchListApi, deleteWatchListApi } from '@/utils/API';
 import { useWatchListStore } from '@/stores';
+import { toast } from 'sonner';
 
 export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
-  const [isLiked, setIsLiked] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [displayedMovie, setDisplayedMovie] = useState<TMDBMovie>(movie);
   const navigate = useNavigate();
-  const { addWatchList, deleteWatchList, watchLists } = useWatchListStore();
+  const {
+    addWatchList,
+    deleteWatchList,
+    watchLists,
+    setLoadingMovie,
+    loadingMovies,
+  } = useWatchListStore();
   const movieId = (movie as any).movie_id ?? movie.id;
   const isInWatchlist = watchLists.some((watchlistMovie) => {
-    const watchlistMovieId = (watchlistMovie as any).movie_id;
+    const watchlistMovieId =
+      (watchlistMovie as any).movie_id ?? watchlistMovie.id;
     return watchlistMovieId === movieId;
   });
+  const isLoading = loadingMovies.has(movieId);
 
   useEffect(() => {
     if (movie.id !== displayedMovie.id) {
@@ -31,23 +40,46 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
     }
   }, [movie, displayedMovie.id]);
   const createWatchList = async (movie: TMDBMovie) => {
+    setLoadingMovie(movieId, true);
     try {
       const response = await createWatchListApi(movie);
       addWatchList(response.data as TMDBMovie);
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.response) {
+        toast.error(
+          error.response.data?.message || 'Failed to add to watchlist'
+        );
+      } else {
+        toast.error(error?.message || 'Failed to add to watchlist');
+      }
       throw error;
+    } finally {
+      setLoadingMovie(movieId, false);
     }
   };
 
   const deleteWatchListFunction = async (movie: TMDBMovie) => {
+    setLoadingMovie(movieId, true);
     try {
-      const response = await deleteWatchListApi(movie);
+      const id = watchLists.find((watch) => watch.movie_id === movieId)?.id;
+      const response = await deleteWatchListApi(
+        String(id || movie.movie_id || movie.id)
+      );
 
       if (response) {
-        deleteWatchList(movie.id);
+        deleteWatchList(movieId);
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.response) {
+        toast.error(
+          error.response.data?.message || 'Failed to remove from watchlist'
+        );
+      } else {
+        toast.error(error?.message || 'Failed to remove from watchlist');
+      }
       throw error;
+    } finally {
+      setLoadingMovie(movieId, false);
     }
   };
 
@@ -111,24 +143,35 @@ export function FeaturedHero({ movie }: { movie: TMDBMovie }) {
             <Button
               size='lg'
               variant='outline'
-              className='border-white text-white hover:bg-white hover:text-black cursor-pointer'
+              className='border-white w-14 text-white hover:bg-white hover:text-black cursor-pointer'
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                if (isInWatchlist || movie.isFavourite) {
-                  deleteWatchListFunction(movie);
+                if (isInWatchlist) {
+                  setLoadingMovie(movieId, true);
+                  setTimeout(() => {
+                    deleteWatchListFunction(movie);
+                  }, 1000);
                 } else {
-                  createWatchList(movie);
+                  setLoadingMovie(movieId, true);
+                  setTimeout(() => {
+                    createWatchList(movie);
+                  }, 1000);
                 }
               }}
+              disabled={isLoading}
             >
-              <Heart
-                className={`h-5 w-5 ${
-                  isInWatchlist || movie.isFavourite || isLiked
-                    ? 'fill-red-600 text-red-600'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              />
+              {isLoading ? (
+                <Loader size={16} color='blue' />
+              ) : (
+                <Heart
+                  className={`h-5 w-5 ${
+                    isInWatchlist
+                      ? 'fill-red-600 text-red-600'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                />
+              )}
             </Button>
           </div>
         </div>

@@ -12,6 +12,7 @@ import Home from './pages/home/Home';
 import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
+import { Toaster } from 'sonner';
 import Watchlist from './pages/watchlist';
 import Recommendation from './pages/recommendation';
 import Profile from './pages/profile';
@@ -20,23 +21,23 @@ import { SyncStatus } from './types';
 
 function App() {
   const token = localStorage.getItem('token');
-  const { userData, fetchUserData, userStatus } = useUserStore();
-  const { watchLists, fetchWatchLists, status } = useWatchListStore();
-  useEffect(() => {
-    if (token) {
-      if (userStatus === SyncStatus.LOCAL) {
-        fetchUserData();
-      }
-      if (status === SyncStatus.LOCAL) {
-        fetchWatchLists();
-        console.log('this is the watchlists', watchLists);
-      }
-    }
-  }, [token, userStatus, status, watchLists, fetchUserData, fetchWatchLists]);
+  // const { fetchUserData, userStatus } = useUserStore();
+  // const { watchLists, fetchWatchLists, status } = useWatchListStore();
+  // useEffect(() => {
+  //   if (token) {
+  //     // if (userStatus === SyncStatus.LOCAL) {
+  //     //   fetchUserData();
+  //     // }
+  //     // if (status === SyncStatus.LOCAL) {
+  //     //   fetchWatchLists();
+  //     // }
+  //   }
+  // }, [token, userStatus, status, watchLists, fetchUserData, fetchWatchLists]);
 
   return (
     <div className='h-screen overflow-y-auto hide-scrollbar'>
       <MantineProvider>
+        <Toaster position='top-right' richColors />
         <Routes>
           <Route path='/auth' element={<AuthLayout />}>
             <Route path='login' element={<Login />} />

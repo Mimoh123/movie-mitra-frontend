@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Select } from '@mantine/core';
+import { Select, Loader, Center } from '@mantine/core';
 import { Search, X } from 'lucide-react';
 import { MovieCard } from '@/components/carousel/Card';
 import { useDropdownMoviesStore, useRecommendationsStore } from '@/stores';
 import { SyncStatus } from '@/types';
+import { toast } from 'sonner';
 
 function Recommendation() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -40,23 +41,43 @@ function Recommendation() {
     recommendationsStatus === SyncStatus.LOADING ||
     recommendationsStatus === SyncStatus.AI_LOADING;
 
-  // Handle initial movieId from URL
   useEffect(() => {
-    if (movieIdFromUrl) {
+    if (movieIdFromUrl && dropdownMovies.length > 0) {
       const movieId = Number(movieIdFromUrl);
-      // Only fetch if the movieId is different from the currently selected one
-      if (selectedMovieId !== movieId) {
-        setSelectedValue(movieIdFromUrl);
-        fetchRecommendations(movieId);
+      let matchedMovie = dropdownMovies.find(
+        (movie) => movie.movie_id === movieId
+      );
+
+      if (!matchedMovie) {
+        matchedMovie = dropdownMovies.find(
+          (movie) =>
+            movie.title.toLowerCase().trim() ===
+            movieIdFromUrl.toLowerCase().trim()
+        );
+      }
+
+      if (matchedMovie) {
+        const matchedMovieId = matchedMovie.movie_id;
+
+        if (selectedMovieId !== matchedMovieId) {
+          setSelectedValue(String(matchedMovieId));
+          fetchRecommendations(matchedMovieId);
+        }
+      } else {
+        setSelectedValue(null);
+        clearRecommendations();
+        // toast.error('Movie not found,we are still updating our datasets');
       }
       setSearchParams({}, { replace: true });
     }
   }, [
     movieIdFromUrl,
+    dropdownMovies,
     fetchRecommendations,
     setSearchParams,
     selectedMovieId,
     setSelectedValue,
+    clearRecommendations,
   ]);
 
   // Handle select change
@@ -181,11 +202,10 @@ function Recommendation() {
         />
       </div>
 
-      {/* Recommendations Grid */}
       {loadingRecommendations ? (
-        <div className='text-gray-400 text-center py-12'>
-          <p>Loading recommendations...</p>
-        </div>
+        <Center className='py-12'>
+          <Loader size='lg' color='gray' />
+        </Center>
       ) : recommendations.length > 0 ? (
         <div className='w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6'>
           {recommendations.map((movie) => (

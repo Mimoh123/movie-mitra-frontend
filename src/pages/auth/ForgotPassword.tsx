@@ -5,6 +5,7 @@ import { forgotPasswordApi } from '@/utils/API';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Icon } from '@iconify/react';
+import { toast } from 'sonner';
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -28,11 +29,18 @@ function ForgotPassword() {
         );
       }
     } catch (err: any) {
-      setError(
+      const errorMessage =
         err.response?.data?.message ||
-          err.message ||
-          'Failed to send password reset email'
-      );
+        err.message ||
+        'Failed to send password reset email';
+      setError(errorMessage);
+      if (err?.response) {
+        toast.error(
+          err.response.data?.message || 'Failed to send password reset email'
+        );
+      } else {
+        toast.error(err?.message || 'Failed to send password reset email');
+      }
     } finally {
       setIsLoading(false);
     }

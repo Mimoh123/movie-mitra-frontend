@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router';
 import { Home, Heart, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useMovieStore, useUserStore, useDropdownMoviesStore } from '@/stores';
+import {
+  useMovieStore,
+  useUserStore,
+  useDropdownMoviesStore,
+  useWatchListStore,
+} from '@/stores';
 import { SyncStatus } from '@/types';
 const defaultNavItems = [
   { id: 'home', label: 'Home', icon: Home, path: '/' },
@@ -28,6 +33,11 @@ function RootLayout() {
   const { userData, fetchUserData, userStatus } = useUserStore();
   const { fetchDropdownMovies, status: dropdownStatus } =
     useDropdownMoviesStore();
+  const {
+    watchLists,
+    fetchWatchLists,
+    status: watchListsStatus,
+  } = useWatchListStore();
 
   useEffect(() => {
     if (status === SyncStatus.LOCAL) {
@@ -41,9 +51,6 @@ function RootLayout() {
       fetchDropdownMovies();
     }
   }, [dropdownStatus, fetchDropdownMovies]);
-  useEffect(() => {
-    console.log('this is the movies', movies);
-  }, [movies]);
 
   useEffect(() => {
     const checkToken = () => {
@@ -64,10 +71,11 @@ function RootLayout() {
     if (userStatus === SyncStatus.LOCAL && token) {
       fetchUserData();
     }
-  }, [userStatus, fetchUserData, token]);
-  useEffect(() => {
-    console.log('this is the user data', userData);
-  }, [userData]);
+    if (watchListsStatus === SyncStatus.LOCAL && token) {
+      fetchWatchLists();
+    }
+  }, [userStatus, fetchUserData, token, watchListsStatus, fetchWatchLists]);
+
   useEffect(() => {
     const currentToken = localStorage.getItem('token');
     if (currentToken && userData.name) {

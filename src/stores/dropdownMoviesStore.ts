@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { SyncStatus } from "@/types";
 import { getDropdownMoviesApi } from "@/utils/API";
+import { toast } from "sonner";
 
 interface DropdownMovie {
  movie_id: number;
@@ -11,6 +12,7 @@ interface DropdownMoviesState {
  movies: DropdownMovie[];
  status: SyncStatus;
  fetchDropdownMovies: () => Promise<void>;
+ clearDropdownMovies: () => void;
 }
 
 const initialState = {
@@ -47,7 +49,15 @@ export const useDropdownMoviesStore = create<DropdownMoviesState>((set) => ({
   } catch (error: any) {
    console.error('Failed to fetch dropdown movies:', error);
    set({ status: SyncStatus.FAILED });
+   if (error?.response) {
+    toast.error(error.response.data?.message || "Failed to fetch movies");
+   } else {
+    toast.error(error?.message || "Failed to fetch movies");
+   }
   }
+ },
+ clearDropdownMovies: () => {
+  set({ ...initialState });
  },
 }));
 

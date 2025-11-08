@@ -25,10 +25,6 @@ function Home() {
     return () => clearInterval(interval);
   }, [movies.length]);
 
-  useEffect(() => {
-    console.log('this is the movies', movies);
-  }, [movies]);
-
   const checkGenre = (movieGenre_id: number[], checkForGenre: number[]) => {
     for (const movieGenre of movieGenre_id) {
       if (checkForGenre.includes(movieGenre)) {

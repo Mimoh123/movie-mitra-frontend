@@ -114,9 +114,9 @@ export const getWatchListsApi = async () => {
 }
 
 
-export const deleteWatchListApi = async (movie: TMDBMovie) => {
+export const deleteWatchListApi = async (id: string) => {
  try {
-  const response = await axiosInstance.delete(`/watchlist/${movie.id}`)
+  const response = await axiosInstance.delete(`/watchlist/${id}`)
   return response.data
  }
  catch (err) {

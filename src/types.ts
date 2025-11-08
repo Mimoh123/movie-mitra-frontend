@@ -11,6 +11,7 @@ export type MovieCard = {
 
 
 export type TMDBMovie = {
+ movie_id?: number;
  adult: boolean;
  backdrop_path: string | null;
  genre_ids: number[];

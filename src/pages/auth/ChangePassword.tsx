@@ -5,6 +5,7 @@ import { changePasswordApi } from '@/utils/API';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Icon } from '@iconify/react';
+import { toast } from 'sonner';
 
 function ChangePassword() {
   const navigate = useNavigate();
@@ -58,11 +59,16 @@ function ChangePassword() {
         }, 2000);
       }
     } catch (err: any) {
-      setError(
+      const errorMessage =
         err.response?.data?.message ||
-          err.message ||
-          'Failed to change password'
-      );
+        err.message ||
+        'Failed to change password';
+      setError(errorMessage);
+      if (err?.response) {
+        toast.error(err.response.data?.message || 'Failed to change password');
+      } else {
+        toast.error(err?.message || 'Failed to change password');
+      }
     } finally {
       setIsLoading(false);
     }

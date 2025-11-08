@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Icon } from '@iconify/react';
 import { useUserStore } from '@/stores';
+import { toast } from 'sonner';
 
 function Login() {
   const navigate = useNavigate();
@@ -26,8 +27,12 @@ function Login() {
         await fetchUserData();
         navigate('/');
       }
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      if (err?.response) {
+        toast.error(err.response.data?.message || 'Failed to login');
+      } else {
+        toast.error(err?.message || 'Failed to login');
+      }
     }
   };
 

@@ -1,7 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useUserStore } from '@/stores';
+import {
+  useUserStore,
+  useWatchListStore,
+  useRecommendationsStore,
+  useMovieStore,
+  useDropdownMoviesStore,
+} from '@/stores';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Icon } from '@iconify/react';
@@ -11,6 +17,10 @@ function Profile() {
   const navigate = useNavigate();
   const { userData, updateUserData, fetchUserData, resetUserData } =
     useUserStore();
+  const { clearWatchList } = useWatchListStore();
+  const { clearRecommendations } = useRecommendationsStore();
+  const { clearMovies } = useMovieStore();
+  const { clearDropdownMovies } = useDropdownMoviesStore();
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -23,6 +33,7 @@ function Profile() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     if (userData.name || userData.email) {
@@ -30,10 +41,8 @@ function Profile() {
         name: userData.name || '',
         email: userData.email || '',
       });
-    } else {
-      fetchUserData();
     }
-  }, [userData, fetchUserData]);
+  }, [userData, token]);
 
   useEffect(() => {
     const changed =
@@ -95,6 +104,10 @@ function Profile() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     resetUserData();
+    clearWatchList();
+    clearRecommendations();
+    clearMovies();
+    clearDropdownMovies();
     navigate('/');
   };
 
